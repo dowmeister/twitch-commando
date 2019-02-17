@@ -1,12 +1,13 @@
 const tmi = require("tmi.js");
 const EventEmitter = require("events");
-const readdir = require("recursive-readdir-synchronous");
+const readdir = require("recursive-readdir-sync");
 const path = require('path');
 
 const TwitchChatMessage = require("./messages/TwitchChatMessage");
 const TwitchChatChannel = require("./channels/TwitchChatChannel");
 const TwtichChatUser = require('./users/TwitchChatUser');
 const CommandParser = require("./commands/CommandParser");
+const TwitchChatCommand = require('./commands/TwitchChatCommand');
 
 class TwitchCommandoClient extends EventEmitter {
   constructor(options) {
@@ -69,11 +70,7 @@ class TwitchCommandoClient extends EventEmitter {
   }
 
   registerCommandsIn(path) {
-    var files = readdir(path, [
-      (file, stats) => {
-        return stats.isDirectory();
-      }
-    ]);
+    var files = readdir(path);
 
     if (this.verboseLogging) console.log(files);
 
@@ -173,5 +170,5 @@ class TwitchCommandoClient extends EventEmitter {
 }
 
 module.exports = {
-  TwitchCommandoClient, TwitchChatChannel, TwitchChatMessage, TwtichChatUser
+  TwitchCommandoClient, TwitchChatChannel, TwitchChatMessage, TwtichChatUser, TwitchChatCommand
 };
