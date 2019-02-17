@@ -1,0 +1,15 @@
+{
+  "name": "twitch-commando",
+  "version": "1.0.0",
+  "description": "Twitch Bot Commando Client",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test.js"
+  },
+  "author": "Francesco 'ShArDiCk' Bramato",
+  "license": "ISC",
+  "dependencies": {
+    "recursive-readdir-synchronous": "0.0.4",
+    "tmi.js": "^1.3.1"
+  }
+}
