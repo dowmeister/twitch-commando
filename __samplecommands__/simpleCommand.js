@@ -1,4 +1,4 @@
-const TwitchChatCommand = require('../commands/TwitchChatCommand');
+const TwitchChatCommand = require('../src/commands/TwitchChatCommand');
 
 module.exports = class SimpleCommand extends TwitchChatCommand
 {

@@ -5,9 +5,9 @@ const {
 const path = require('path');
 
 var client = new TwitchCommandoClient({
-    username: 'TruckyBot',
-    oauth: 'h6nd4u9fhl59n3njx7462hdph2p4oz',
-    channels: [ '#truckyapp' ]
+    username: 'BOTUSERNAME',
+    oauth: 'YOUROAUTHPASSWORD',
+    channels: [ '#yourchannel' ]
 });
 
 client.enableVerboseLogging();

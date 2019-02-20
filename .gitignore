@@ -78,3 +78,7 @@ typings/
 
 # DynamoDB Local files
 .dynamodb/
+
+# Commando 
+test-private.js
+docs/
