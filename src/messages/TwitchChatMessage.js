@@ -141,6 +141,11 @@ class TwitchChatMessage
     {
         this.client.say(this.channel.name, `@${this.author.username} ${text}`);
     }
+
+    async actionReply(text)
+    {
+        this.client.action(this.channel.name, `@${this.author.username} ${text}`);
+    }
 }
 
 module.exports = TwitchChatMessage;

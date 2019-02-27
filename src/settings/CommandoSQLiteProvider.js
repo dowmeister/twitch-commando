@@ -39,9 +39,9 @@ class CommandoSQLiteProvider extends SettingsProvider
 
     async get(channel, key, defVal)
     {
-        if (this.settings[channel] !== 'undefined')
+        if (this.settings[channel] != undefined)
         {
-            if (this.settings[channel][key] !== 'undefined')
+            if (this.settings[channel][key] != undefined)
                 return this.settings[channel][key];
             else
                 return defVal;

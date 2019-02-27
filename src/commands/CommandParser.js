@@ -4,7 +4,7 @@ class CommandParser {
   }
 
   parse(message, prefix) {
-    const regex = new RegExp('([' + prefix + '])([^\\s]+) ?(.*)','gims');
+    const regex = new RegExp('^([' + prefix + '])([^\\s]+) ?(.*)','gims');
 
     console.log(regex);
 

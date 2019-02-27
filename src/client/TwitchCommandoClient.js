@@ -151,6 +151,10 @@ class TwitchCommandoClient extends EventEmitter {
     this.tmi.say(channel, message);
   }
 
+  action(channel, message) {
+    this.tmi.action(channel, message);
+  }
+
 
   /**
    * Register commands in given path (recursive)
@@ -265,7 +269,7 @@ class TwitchCommandoClient extends EventEmitter {
     if (prefixFromSettngs != undefined)
       prefix = prefixFromSettngs;
 
-    var parserResult = this.parser.parse(messageText, prefixFromSettngs);
+    var parserResult = this.parser.parse(messageText, prefix);
 
     if (parserResult != null)
     {
