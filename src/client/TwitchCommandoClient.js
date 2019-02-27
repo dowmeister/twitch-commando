@@ -35,6 +35,7 @@ const TwitchChatCommand = require('../commands/TwitchChatCommand');
  * @property {String} prefix
  * @property {Boolean} greetOnJoin
  * @property {Array<String>} channels
+ * @property {String} onJoinMessage
 */
 
 /**
@@ -218,11 +219,16 @@ class TwitchCommandoClient extends EventEmitter {
   onJoin(channel) {
     var channelObject = new TwitchChatChannel(
       {
-        channel: channel
+        name: channel
       },
       this
     );
 
+    if (this.options.greetOnJoin)
+    {
+      this.action(channel, this.options.onJoinMessage);
+    }
+    
     this.emit("join", channelObject);
   }
 
