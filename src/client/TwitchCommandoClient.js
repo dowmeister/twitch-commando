@@ -165,7 +165,7 @@ class TwitchCommandoClient extends EventEmitter {
   registerCommandsIn(path) {
     var files = readdir(path);
 
-    if (this.verboseLogging) console.log(files);
+    //if (this.verboseLogging) console.log(files);
 
     files.forEach(f => {
       var commandFile = require(f);
@@ -175,7 +175,7 @@ class TwitchCommandoClient extends EventEmitter {
         `Register command ${command.options.group}:${command.options.name}`
       );
 
-      if (this.verboseLogging) console.log(this.command);
+      //if (this.verboseLogging) console.log(this.command);
 
       this.commands.push(command);
     }, this);

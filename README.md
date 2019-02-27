@@ -17,11 +17,11 @@ By now it manages commands starting with **!** (exclamation point).
 
 ## How to install
 
-`npm install --save twtich-commando`
+`npm install --save twitch-commando`
 
 **Note: Not still an npm module. Use this GitHub until npm publishing.**
 
-## How to use
+## Basic Bot skeleton
 
 ```
 const {
@@ -131,6 +131,24 @@ module.exports = SampleCommandWithArguments;
 ```
 
 Send `!sample argumentValue`, the bot will reply with `@username You sent argumentValue` . If you send only `!sample`, default value will be used, so the bot will reply with `@username You sent this is default` .
+
+## Save channel preferences
+
+Twitch Commando comes with built-in settings provider engine to save channel preferences. By default it's based on Sqlite with a file database.
+
+The database is created by default with an empty settings table.
+
+In a command, you can access the settings provider as below:
+
+### Get channel preference by key
+```
+this.client.settingsProvider.get(msg.channel.name, 'key');
+```
+
+### Set channel preference
+```
+this.client.settingsProvider.set(msg.channel.name, 'key', 'new value');
+```
 
 ## Builtin commands
 

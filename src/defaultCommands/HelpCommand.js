@@ -21,21 +21,44 @@ module.exports = class HelpCommand extends TwitchChatCommand
         });
     }
 
-    async run(msg, parameters)
+    async run(msg, { command })
     {
-        var messageText = `\`\`\`To run a command in ${msg.channel.name}, use !command or @${this.client.tmi.username} command. For example, !prefix or @${this.client.tmi.username} prefix.\n\r
-        To run a command in this DM, simply use command with no prefix.\n\r
-        
-        Use help <command> to view detailed information about a specific command.\n\r
-        Use help all to view a list of all commands, not just available ones.\n\r\n\r`;
+        var messageText = '';
 
-        this.client.commands.forEach( (c) => {
+        if (command == '')
+        {
+            messageText = 'Available commands: '
 
-            messageText += `*${c.options.name}* - ${this.options.description}\n\r`;
-        });
+            var commands = new Array();
 
-        messageText += "```";
+            for (let index = 0; index < this.client.commands.length; index++) {
+                const c = this.client.commands[index];
+                var prefix = await this.client.settingsProvider.get(msg.channel.name, 'prefix', this.client.options.prefix);
 
-        msg.author.whisper(messageText);
+                commands.push(prefix + c.options.name);
+            }
+
+            messageText += commands.join(', ');
+
+            return msg.author.whisper(messageText);
+        }
+        else
+        {
+            var selectedCommand = this.client.commands.find( (c) => { return c.options.name == command });
+
+            if (selectedCommand)
+            {
+                messageText = command + ' command details: ' + selectedCommand.options.description;
+
+                if (selectedCommand.options.examples && selectedCommand.options.examples.length > 0)
+                {
+                    messageText += ' - Examples: ' + selectedCommand.options.examples.join(', ');
+                }
+
+                return msg.author.whisper(messageText);
+            }
+            else
+                return msg.actionReply('command not found.');
+        }
     }
 }
