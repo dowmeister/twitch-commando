@@ -3,10 +3,12 @@ class CommandParser {
     this.commands = commands;
   }
 
-  parse(message) {
-    const pattern = /(!)([^\s]*) ?(.*)/gims;
+  parse(message, prefix) {
+    const regex = new RegExp('([' + prefix + '])([^\\s]+) ?(.*)','gims');
 
-    var regex = new RegExp(pattern);
+    console.log(regex);
+
+    //var regex = new RegExp(pattern);
     var matches = regex.exec(message);
 
     console.log(matches);

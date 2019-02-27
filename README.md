@@ -25,9 +25,9 @@ By now it manages commands starting with **!** (exclamation point).
 
 ```
 const {
-    TwitchCommandoClient, TwtichChatMessage, TwtichChatUser 
+    TwitchCommandoClient, TwtichChatMessage, TwtichChatUser, CommandoSQLiteProvider
 } = require('twitch-commando');
-
+const sqlite = require('sqlite');
 const path = require('path');
 
 var client = new TwitchCommandoClient({
@@ -53,6 +53,10 @@ client.on('message', message => {
 
 client.registerDetaultCommands();
 client.registerCommandsIn(path.join(__dirname, 'commands'));
+
+client.setProvider(
+    sqlite.open(path.join(__dirname, 'database.sqlite3')).then(db => new CommandoSQLiteProvider(db))
+);
 
 client.connect();
 
@@ -131,11 +135,12 @@ Send `!sample argumentValue`, the bot will reply with `@username You sent argume
 ## Builtin commands
 
 * !help : this command will send a private message to the user with all commands available
+* !prefix : this command will change the command prefix for given channel (restricted to broadcaster only)
 
 ## Roadmap
 
 * Better docs and examples
-* Custom prefix (now it's stick to **!**)
+* ~~Custom prefix (now it's stick to **!**)~~
 * Command arguments validation
-* Integration with database like SQLLite or Mongo to save channels preferences
+* ~~Integration with database like SQLLite or Mongo to save channels preferences~~
 * Automatic and timed messages
