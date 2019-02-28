@@ -220,11 +220,12 @@ class TwitchCommandoClient extends EventEmitter {
   }
 
   /**
-   * Channel joined
+   * Channel joined or someone join the channel
    * @event TwitchCommandoClient#join
-   * @type {TwitchChatChannel}
+   * @type {TwitchChatChannel} channel
+   * @type {String} username
    */
-  onJoin(channel) {
+  onJoin(channel, username) {
     var channelObject = new TwitchChatChannel(
       {
         name: channel
@@ -232,11 +233,11 @@ class TwitchCommandoClient extends EventEmitter {
       this
     );
 
-    if (this.options.greetOnJoin) {
+    if (this.options.greetOnJoin && this.getUsername() == username && this.options.onJoinMessage && this.options.onJoinMessage != '') {
       this.action(channel, this.options.onJoinMessage);
     }
 
-    this.emit("join", channelObject);
+    this.emit("join", channelObject, username);
   }
 
   /**
