@@ -8,6 +8,13 @@
     "test-dev": "node test-private.js",
     "docs": "jsdoc -r src/ -d docs"
   },
+  "repository": {
+    "type": "github",
+    "url": "https://github.com/shardick/twitch-commando"
+  },
+  "contributors": [
+    "Cyber_Star"
+  ],
   "author": "Francesco 'ShArDiCk' Bramato",
   "license": "ISC",
   "dependencies": {
