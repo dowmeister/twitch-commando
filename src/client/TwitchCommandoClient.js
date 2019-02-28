@@ -1,13 +1,13 @@
 const tmi = require("tmi.js");
 const EventEmitter = require("events");
 const readdir = require("recursive-readdir-sync");
-const path = require('path');
+const path = require("path");
 
 const TwitchChatMessage = require("../messages/TwitchChatMessage");
 const TwitchChatChannel = require("../channels/TwitchChatChannel");
-const TwtichChatUser = require('../users/TwitchChatUser');
+const TwtichChatUser = require("../users/TwitchChatUser");
 const CommandParser = require("../commands/CommandParser");
-const TwitchChatCommand = require('../commands/TwitchChatCommand');
+const TwitchChatCommand = require("../commands/TwitchChatCommand");
 
 /**
  * The Commando Client class
@@ -38,15 +38,13 @@ const TwitchChatCommand = require('../commands/TwitchChatCommand');
  * @property {String} onJoinMessage,
  * @property {Boolean} autoJoinBotChannel
  * @property {Boolean} enableJoinCommand
-*/
+ */
 
 /**
  * @class TwitchCommandoClient
  * @extends {EventEmitter}
  */
 class TwitchCommandoClient extends EventEmitter {
-
-
   /**
    *Creates an instance of TwitchCommandoClient.
    * @param {ClientOptions} options Client configuration options
@@ -56,7 +54,7 @@ class TwitchCommandoClient extends EventEmitter {
     super();
 
     let defaultOptions = {
-      prefix: '!',
+      prefix: "!",
       greetOnJoin: false,
       botOwners: [],
       autoJoinBotChannel: true,
@@ -72,7 +70,6 @@ class TwitchCommandoClient extends EventEmitter {
     this.commands = [];
   }
 
-
   /**
    * Enable verbose logging
    *
@@ -84,16 +81,15 @@ class TwitchCommandoClient extends EventEmitter {
 
   configureClient() {}
 
-  checkOptions()
-  {
-    if (this.options.prefix == '/')
-      throw new Error('Invalid prefix. Cannot be /');
+  checkOptions() {
+    if (this.options.prefix == "/")
+      throw new Error("Invalid prefix. Cannot be /");
 
     if (this.options.username == undefined)
-      throw new Error('Username not specified');
+      throw new Error("Username not specified");
 
     if (this.options.oauth == undefined)
-      throw new Error('Oauth password not specified');
+      throw new Error("Oauth password not specified");
   }
 
   /**
@@ -102,7 +98,6 @@ class TwitchCommandoClient extends EventEmitter {
    * @memberof TwitchCommandoClient
    */
   connect() {
-
     this.checkOptions();
 
     this.configureClient();
@@ -144,7 +139,6 @@ class TwitchCommandoClient extends EventEmitter {
     this.tmi.connect();
   }
 
-
   /**
    * Send a message in the channel
    *
@@ -159,7 +153,6 @@ class TwitchCommandoClient extends EventEmitter {
   action(channel, message) {
     this.tmi.action(channel, message);
   }
-
 
   /**
    * Register commands in given path (recursive)
@@ -206,7 +199,6 @@ class TwitchCommandoClient extends EventEmitter {
     return command;
   }
 
-
   /**
    * Bot connected
    * @event TwitchCommandoClient#connected
@@ -214,10 +206,17 @@ class TwitchCommandoClient extends EventEmitter {
   onConnect() {
     this.emit("connected");
 
-    if (this.options.autoJoinBotChannel)
-    {
-      this.tmi.join('#' + this.options.username);
+    if (this.options.autoJoinBotChannel) {
+      this.tmi.join("#" + this.options.username);
     }
+
+    this.settingsProvider.get("global", "channels", []).then(channels => {
+      channels.forEach(c => {
+        if (!this.options.channels.includes(c)) {
+          this.join(c);
+        }
+      });
+    });
   }
 
   /**
@@ -233,14 +232,12 @@ class TwitchCommandoClient extends EventEmitter {
       this
     );
 
-    if (this.options.greetOnJoin)
-    {
+    if (this.options.greetOnJoin) {
       this.action(channel, this.options.onJoinMessage);
     }
-    
+
     this.emit("join", channelObject);
   }
-
 
   /**
    * Bot disonnects
@@ -251,26 +248,24 @@ class TwitchCommandoClient extends EventEmitter {
     this.emit("disconnected");
   }
 
-
   /**
    * Message received
    * @event TwitchCommandoClient#message
    * @type {TwitchChatMessage}
    */
 
-   /**
+  /**
    * Command executed
    * @event TwitchCommandoClient#commandExecuted
    * @type {object}
    */
 
-   /**
+  /**
    * Command error
    * @event TwitchCommandoClient#commandError
    * @type {Error}
    */
   async onMessage(channel, userstate, messageText, self) {
-
     if (self) return;
 
     var message = new TwitchChatMessage(userstate, channel, this);
@@ -280,36 +275,33 @@ class TwitchCommandoClient extends EventEmitter {
     this.emit("message", message);
 
     var prefix = this.options.prefix;
-    var prefixFromSettngs = await this.settingsProvider.get(message.channel.name, 'prefix');
-    if (prefixFromSettngs != undefined)
-      prefix = prefixFromSettngs;
+    var prefixFromSettngs = await this.settingsProvider.get(
+      message.channel.name,
+      "prefix"
+    );
+    if (prefixFromSettngs != undefined) prefix = prefixFromSettngs;
 
     var parserResult = this.parser.parse(messageText, prefix);
 
-    if (parserResult != null)
-    {
+    if (parserResult != null) {
       if (this.verboseLogging) console.log(parserResult);
 
       var command = this.findCommand(parserResult);
 
-      if (command != null) 
-      {
-
+      if (command != null) {
         let preValidateResponse = command.preValidate(message);
 
-        if (preValidateResponse == '')
-        {
-          command.prepareRun(message, parserResult.args).then( (commandResult) => {
-            this.emit('commandExecuted', commandResult);          
-          })
-          .catch( (err) => {
-
-            message.reply('Unexpected error: ' + err);
-            this.emit('commandError', err);
-          });
-        }
-        else
-          message.reply(preValidateResponse);
+        if (preValidateResponse == "") {
+          command
+            .prepareRun(message, parserResult.args)
+            .then(commandResult => {
+              this.emit("commandExecuted", commandResult);
+            })
+            .catch(err => {
+              message.reply("Unexpected error: " + err);
+              this.emit("commandError", err);
+            });
+        } else message.reply(preValidateResponse);
       }
     }
   }
@@ -319,7 +311,6 @@ class TwitchCommandoClient extends EventEmitter {
   onBan(user, reason) {}
 
   onUnban(user) {}
-
 
   /**
    * Connection timeout
@@ -338,40 +329,33 @@ class TwitchCommandoClient extends EventEmitter {
     this.emit("reconnect");
   }
 
-
   /**
    * Register default commands, like !help
    *
    * @memberof TwitchCommandoClient
    */
-  registerDetaultCommands()
-  {
-    this.registerCommandsIn(path.join(__dirname, '../defaultCommands'));
+  registerDetaultCommands() {
+    this.registerCommandsIn(path.join(__dirname, "../defaultCommands"));
   }
 
-  async setProvider(provider)
-  {
+  async setProvider(provider) {
     this.settingsProvider = await provider;
     await this.settingsProvider.init(this);
   }
 
-  async join(channel)
-  {
+  async join(channel) {
     return this.tmi.join(channel);
   }
 
-  async part(channel)
-  {
+  async part(channel) {
     return this.tmi.part(channel);
   }
 
-  getUsername()
-  {
+  getUsername() {
     return this.tmi.getUsername();
   }
 
-  getChannels()
-  {
+  getChannels() {
     return this.tmi.getChannels();
   }
 }

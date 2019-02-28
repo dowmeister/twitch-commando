@@ -8,7 +8,7 @@ I've decided to develop this module to fill the gap with Discord Bots implementa
 
 By now it manages commands starting with **!** (exclamation point).
 
-## What Twtich Commando do for you
+## What Twitch Commando do for you
 
 * Automatic commands parsing
 * Automatic command parameter recognition and conversion to named variables
@@ -33,7 +33,10 @@ const path = require('path');
 var client = new TwitchCommandoClient({
     username: 'MyFancyBot',
     oauth: 'YOUROAUTHPASSWORD',
-    channels: [ '#yourawesomechannel' ]
+    channels: [ '#yourawesomechannel' ],
+    botOwners: [
+        'dowmeister'
+    ]
 });
 
 // good for development and debugging
@@ -142,7 +145,7 @@ In a command, you can access the settings provider as below:
 
 ### Get channel preference by key
 ```
-this.client.settingsProvider.get(msg.channel.name, 'key');
+this.client.settingsProvider.get(msg.channel.name, 'key', 'default Value');
 ```
 
 ### Set channel preference

@@ -20,7 +20,7 @@ module.exports = class PartCommand extends TwitchChatCommand
             return msg.reply('Part command is not enabled');
         
         if (msg.channel.name != '#' + this.client.getUsername())
-            return msg.reply('This channel can be executed only in the bot channel. Please head to https://twitch.tv/' + this.client.getUsername());
+            return msg.reply('This command can be executed only in the bot channel. Please head to https://twitch.tv/' + this.client.getUsername());
         
         if (!this.client.getChannels().includes('#'+ this.client.getUsername()))
             return msg.reply('The bot is not in your channel');
@@ -28,6 +28,10 @@ module.exports = class PartCommand extends TwitchChatCommand
         //console.log(this.client.tmi.getChannels());
         
         await this.client.part('#' + msg.author.username);
+        
+        let channels = await this.client.settingsProvider.get('global', 'channels', []);
+        channels = channels.filter( (c) => { return c != '#' + msg.author.username });
+        await this.client.settingsProvider.set('global', 'channels', channels);
 
         return msg.reply('Channel left');
     }
