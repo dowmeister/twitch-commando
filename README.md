@@ -154,6 +154,8 @@ this.client.settingsProvider.set(msg.channel.name, 'key', 'new value');
 
 * !help : this command will send a private message to the user with all commands available
 * !prefix : this command will change the command prefix for given channel (restricted to broadcaster only)
+* !join : this command will request the bot to join the message author channel. Can be executed only in bot channel (if enabled)
+* !part : this command will request the bot to leave the message author channel. Can be executed only in bot channel (enabled with !join command)
 
 ## Roadmap
 
