@@ -6,8 +6,6 @@ Under the hood TwitchCommandoClient uses `tmi.js` to integrate with Twitch Chat.
 
 I've decided to develop this module to fill the gap with Discord Bots implementation where discord.js Commando offers a big and solid infrastructure for Bots with a great command development skeleton.
 
-By now it manages commands starting with **!** (exclamation point).
-
 ## What Twitch Commando do for you
 
 * Automatic commands parsing
@@ -18,8 +16,6 @@ By now it manages commands starting with **!** (exclamation point).
 ## How to install
 
 `npm install --save twitch-commando`
-
-**Note: Not still an npm module. Use this GitHub until npm publishing.**
 
 ## Basic Bot skeleton
 
