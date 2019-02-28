@@ -35,7 +35,9 @@ const TwitchChatCommand = require('../commands/TwitchChatCommand');
  * @property {String} prefix
  * @property {Boolean} greetOnJoin
  * @property {Array<String>} channels
- * @property {String} onJoinMessage
+ * @property {String} onJoinMessage,
+ * @property {Boolean} autoJoinBotChannel
+ * @property {Boolean} enableJoinCommand
 */
 
 /**
@@ -56,10 +58,12 @@ class TwitchCommandoClient extends EventEmitter {
     let defaultOptions = {
       prefix: '!',
       greetOnJoin: false,
-      botOwners: []
+      botOwners: [],
+      autoJoinBotChannel: true,
+      enableJoinCommand: true
     };
 
-    Object.assign({}, options, defaultOptions);
+    options = Object.assign(defaultOptions, options);
 
     this.options = options;
 
@@ -209,6 +213,11 @@ class TwitchCommandoClient extends EventEmitter {
    */
   onConnect() {
     this.emit("connected");
+
+    if (this.options.autoJoinBotChannel)
+    {
+      this.tmi.join('#' + this.options.username);
+    }
   }
 
   /**
@@ -295,7 +304,7 @@ class TwitchCommandoClient extends EventEmitter {
           })
           .catch( (err) => {
 
-            message.reply('')
+            message.reply('Unexpected error: ' + err);
             this.emit('commandError', err);
           });
         }
@@ -344,6 +353,26 @@ class TwitchCommandoClient extends EventEmitter {
   {
     this.settingsProvider = await provider;
     await this.settingsProvider.init(this);
+  }
+
+  async join(channel)
+  {
+    return this.tmi.join(channel);
+  }
+
+  async part(channel)
+  {
+    return this.tmi.part(channel);
+  }
+
+  getUsername()
+  {
+    return this.tmi.getUsername();
+  }
+
+  getChannels()
+  {
+    return this.tmi.getChannels();
   }
 }
 

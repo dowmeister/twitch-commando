@@ -97,6 +97,11 @@ class TwichChatCommand
 
     preValidate(/** @type {TwitchChatMessage} */ msg)
     {
+        if (this.options.ownerOnly && this.client.botOwners != undefined 
+            && this.client.botOwners.length > 0 
+            && !this.client.options.botOwners.includes(msg.author.name))
+            return 'This command can be executed only from bot owners';
+
         if (this.options.modOnly)
         {
             if ( (msg.author.badges && msg.author.badges.broadcaster != '1') || !msg.author.mod)
