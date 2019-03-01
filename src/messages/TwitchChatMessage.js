@@ -5,7 +5,7 @@ const TwitchChatUser = require('../users/TwitchChatUser');
 /**
  * This class represents the chat message
  *
- * @class TwitchChatMessage
+ * @class
  */
 class TwitchChatMessage
 {
@@ -142,6 +142,14 @@ class TwitchChatMessage
         this.client.say(this.channel.name, `@${this.author.username} ${text}`);
     }
 
+
+    /**
+     * Helper method to reply quickly to a message with an action
+     *
+     * @async
+     * @param {String} text
+     * @memberof TwitchChatMessage
+     */
     async actionReply(text)
     {
         this.client.action(this.channel.name, `@${this.author.username} ${text}`);

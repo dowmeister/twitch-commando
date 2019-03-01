@@ -10,9 +10,23 @@ const CommandParser = require("../commands/CommandParser");
 const TwitchChatCommand = require("../commands/TwitchChatCommand");
 
 /**
+ * Client configuration options
+ * @typedef {Object} ClientOptions
+ * @property {Boolean} verboseLogging Enable verbose logging
+ * @property {String} username Bot username
+ * @property {String} oauth Bot oauth password (without oauth:)
+ * @property {Array<String>} botOwners List of bot owners username
+ * @property {String} prefix Default command prefix
+ * @property {Boolean} greetOnJoin Denotes if the bot must send a message when join a channel
+ * @property {Array<String>} channels Initials channels to join
+ * @property {String} onJoinMessage On Join message (sent if greetOnJoin = true)
+ * @property {Boolean} autoJoinBotChannel Denotes if the bot must autojoin its own channel
+ * @property {Boolean} enableJoinCommand Denotes if enable the !join and !part command in bot channel
+ */
+
+/**
  * The Commando Client class
- *
- * @class TwitchCommandoClient
+ * @class
  * @extends {EventEmitter}
  * @fires TwitchCommandoClient#connected
  * @fires TwitchCommandoClient#join
@@ -23,26 +37,6 @@ const TwitchChatCommand = require("../commands/TwitchChatCommand");
  * @fires TwitchCommandoClient#commandError
  * @fires TwitchCommandoClient#message
  * @fires TwitchCommandoClient#reconnect
- */
-
-/**
- * Client configuration options
- * @typedef {Object} ClientOptions
- * @property {Boolean} verboseLogging
- * @property {String} username
- * @property {String} oauth
- * @property {Array<String>} botOwners
- * @property {String} prefix
- * @property {Boolean} greetOnJoin
- * @property {Array<String>} channels
- * @property {String} onJoinMessage,
- * @property {Boolean} autoJoinBotChannel
- * @property {Boolean} enableJoinCommand
- */
-
-/**
- * @class TwitchCommandoClient
- * @extends {EventEmitter}
  */
 class TwitchCommandoClient extends EventEmitter {
   /**
@@ -140,7 +134,7 @@ class TwitchCommandoClient extends EventEmitter {
   }
 
   /**
-   * Send a message in the channel
+   * Send a text message in the channel
    *
    * @param {String} channel
    * @param {String} message
@@ -150,6 +144,14 @@ class TwitchCommandoClient extends EventEmitter {
     this.tmi.say(channel, message);
   }
 
+  /**
+   * Send an action message in the channel
+   *
+   * @param {String} channel
+   * @param {String} message
+   * @returns {String}
+   * @memberof TwitchCommandoClient
+   */
   action(channel, message) {
     this.tmi.action(channel, message);
   }
@@ -339,25 +341,69 @@ class TwitchCommandoClient extends EventEmitter {
     this.registerCommandsIn(path.join(__dirname, "../defaultCommands"));
   }
 
+  /**
+   * Set Settings Provider class
+   *
+   * @async
+   * @memberof TwitchCommandoClient
+   */
   async setProvider(provider) {
     this.settingsProvider = await provider;
     await this.settingsProvider.init(this);
   }
 
+  /**
+   * Request the bot to join a channel
+   *
+   * @async
+   * @returns {Promise<String>}
+   * @memberof TwitchCommandoClient
+   */
   async join(channel) {
     return this.tmi.join(channel);
   }
 
+   /**
+   * Request the bot to leave a channel
+   *
+   * @async
+   * @returns {Promise<String>}
+   * @memberof TwitchCommandoClient
+   */
   async part(channel) {
     return this.tmi.part(channel);
   }
 
+   /**
+   * Gets the bot username
+   *
+   * @returns {String}
+   * @memberof TwitchCommandoClient
+   */
   getUsername() {
     return this.tmi.getUsername();
   }
 
+  /**
+   * Gets the bot channels
+   *
+   * @returns {Array<String>}
+   * @memberof TwitchCommandoClient
+   */
   getChannels() {
     return this.tmi.getChannels();
+  }
+
+  /**
+   * Checks if the message author is one of bot owners
+   *
+   * @param {TwitchChatUser} author Message author
+   * @returns {Boolean}
+   * @memberof TwitchCommandoClient
+   */
+  isOwner(author)
+  {
+    return this.options.botOwners.includes(author.username);
   }
 }
 

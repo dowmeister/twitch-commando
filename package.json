@@ -6,7 +6,9 @@
   "scripts": {
     "test": "node test.js",
     "test-dev": "node test-private.js",
-    "docs": "jsdoc -r src/ -d docs"
+    "docs": "documentation build src/** -f html -o docs",
+    "docs-md": "documentation build src/** -f md -o docs.md",
+    "docs-all": "npm run docs-md && npm run docs"
   },
   "repository": {
     "type": "github",

@@ -2,35 +2,30 @@ const TwitchCommandoClient = require('../client/TwitchCommandoClient');
 const TwitchChatMessage = require('../messages/TwitchChatMessage');
 
 /**
- * Base class to implement custom commands
- *
- * @class TwichChatCommand
- */
-
-/**
  * Command argument
  * @typedef {Object} CommandArgument
- * @property {String} name
- * @property {Object} type
- * @property {Object} defaultValue
+ * @property {String} name Argument key name
+ * @property {Object} type Argument type
+ * @property {Object} defaultValue Argument default value
 */
  
 /**
  * Command Options
  * @typedef {Object} CommandOptions
- * @property {String} name
- * @property {Boolean} modOnly
- * @property {Boolean} ownerOnly
- * @property {Boolean} broadcasterOnly
- * @property {String} description
- * @property {Array<String>} examples
- * @property {Array<CommandArgument>} args
- * @property {String} group
- * @property {Array<String>} aliases
+ * @property {String} name Command name
+ * @property {Boolean} modOnly Restricted only to channel mods
+ * @property {Boolean} ownerOnly Restricted only to bot owners
+ * @property {Boolean} broadcasterOnly Restricted only to channel owner
+ * @property {String} description Command description
+ * @property {Array<String>} examples Command examples
+ * @property {Array<CommandArgument>} args Arguments
+ * @property {String} group Command group
+ * @property {Array<String>} aliases Command aliases
  */
 
  /**
- * @class TwichChatCommand
+ * Base class to implement custom commands
+ * @class
  */
 class TwichChatCommand
 {
