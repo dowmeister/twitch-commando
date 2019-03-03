@@ -6,7 +6,7 @@ module.exports = class HelpCommand extends TwitchChatCommand
     {
         super(client, {
             name: 'help',
-            group: 'misc',
+            group: 'system',
             description: "This command shows help for all commands. Send !help <command> for detailed help on a command",
             examples: [
                 "!help", "!help <command>"
@@ -32,10 +32,14 @@ module.exports = class HelpCommand extends TwitchChatCommand
             var commands = new Array();
 
             for (let index = 0; index < this.client.commands.length; index++) {
-                const c = this.client.commands[index];
-                var prefix = await this.client.settingsProvider.get(msg.channel.name, 'prefix', this.client.options.prefix);
 
-                commands.push(prefix + c.options.name);
+                if (!this.options.hideFromHelp)
+                {
+                    const c = this.client.commands[index];
+                    var prefix = await this.client.settingsProvider.get(msg.channel.name, 'prefix', this.client.options.prefix);
+
+                    commands.push(prefix + c.options.name);
+                }
             }
 
             messageText += commands.join(', ');
@@ -44,7 +48,7 @@ module.exports = class HelpCommand extends TwitchChatCommand
         }
         else
         {
-            var selectedCommand = this.client.commands.find( (c) => { return c.options.name == command });
+            var selectedCommand = this.client.commands.find( (c) => { return c.options.name == command && !c.options.hideFromHelp });
 
             if (selectedCommand)
             {

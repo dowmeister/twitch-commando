@@ -1,17 +1,18 @@
 class CommandParser {
-  constructor(commands) {
+  constructor(commands, client) {
     this.commands = commands;
+    this.client = client;
   }
 
   parse(message, prefix) {
     const regex = new RegExp('^([' + prefix + '])([^\\s]+) ?(.*)','gims');
 
-    console.log(regex);
+    this.client.logger.debug('%o', regex);
 
     //var regex = new RegExp(pattern);
     var matches = regex.exec(message);
 
-    console.log(matches);
+    this.client.logger.debug('%o', matches);
 
     if (matches != null) {
       var prefix = matches[1];

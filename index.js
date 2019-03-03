@@ -6,7 +6,8 @@ const TwitchChatCommand = require('./src/commands/TwitchChatCommand');
 const TwitchCommandoClient = require('./src/client/TwitchCommandoClient');
 const SettingsProvider = require('./src/settings/SettingsPovider');
 const CommandoSQLiteProvider = require('./src/settings/CommandoSQLiteProvider');
+const CommandoConstants = require('./src/client/CommandoConstants');
 
 module.exports = {
-  TwitchCommandoClient, TwitchChatChannel, TwitchChatMessage, TwtichChatUser, TwitchChatCommand, SettingsProvider, CommandoSQLiteProvider
+  TwitchCommandoClient, TwitchChatChannel, TwitchChatMessage, TwtichChatUser, TwitchChatCommand, SettingsProvider, CommandoSQLiteProvider, CommandoConstants
 };

@@ -119,11 +119,24 @@ class TwitchChatUser
      * Whisper a message to the user
      *
      * @param {String} message Message Text
+     * @async
      * @memberof TwitchChatUser
      */
-    whisper(message)
+    async whisper(message)
     {
-        this.client.tmi.whisper(this.username, message);
+        return this.client.whisper(this.username, message);
+    }
+
+    /**
+     * Get the user channel
+     * 
+     * @returns {String} Channel name
+     * @readonly
+     * @memberof TwitchChatUser
+     */
+    get channel()
+    {
+        return '#' + this.username;
     }
 }
 

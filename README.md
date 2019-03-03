@@ -12,10 +12,15 @@ I've decided to develop this module to fill the gap with Discord Bots implementa
 * Automatic command parameter recognition and conversion to named variables
 * Useful methods like .reply to easily reply to a user quoting him in the chat
 * Commands are executed in async  (useful for API integration and external http calls)
+* Automatic rate limiting control (exceeding messages will be blocked at the client)
+* Channel and global preferences saving (by default on Sqlite)
+* Custom command prefix per channel (broadcaster can choose it)
 
 ## How to install
 
 `npm install --save twitch-commando`
+
+https://www.npmjs.com/package/twitch-commando
 
 ## Basic Bot skeleton
 
@@ -38,7 +43,7 @@ var client = new TwitchCommandoClient({
 // good for development and debugging
 client.enableVerboseLogging();
 
-client.once('ready', () => {    
+client.on('connected', () => {    
 });
 
 client.on('join', channel => {
@@ -149,17 +154,43 @@ this.client.settingsProvider.get(msg.channel.name, 'key', 'default Value');
 this.client.settingsProvider.set(msg.channel.name, 'key', 'new value');
 ```
 
+## Rate limiting control
+
+Twitch Chat set message limits depening on bot or client type, see https://dev.twitch.tv/docs/irc/guide/#command--message-limits for detailed informations.
+Commando try to solve the problem for you, controlling and blocking messages without going over the limit.
+
+To set proper rate limiting control, you must use the `botType` property of `ClientOptions` object when passing configuration options to `TwitchCommandoClient` constructor.
+
+To request to increase limits for your bot, please refer here: https://discuss.dev.twitch.tv/t/have-a-chat-whisper-bot-let-us-know/10651 
+
 ## Builtin commands
 
-* !help : this command will send a private message to the user with all commands available
-* !prefix : this command will change the command prefix for given channel (restricted to broadcaster only)
-* !join : this command will request the bot to join the message author channel. Can be executed only in bot channel (if enabled)
-* !part : this command will request the bot to leave the message author channel. Can be executed only in bot channel (enabled with !join command)
+* **help** : this command will send a private message to the user with all commands available
+* **prefix** : this command will change the command prefix for current channel (restricted to broadcaster only)
+* **join** : this command will request the bot to join the message author channel. Can be executed only in bot channel (if enabled)
+* **part** : this command will request the bot to leave the message author channel. Can be executed only in bot channel (enabled with **join** command)
+
+## Changelog
+* 1.0.0 : first release
+* 1.0.1 : updated readme and docs
+* 1.0.2 :
+    * added `EmotesManager` (download updated emotes from https://twitchemotes.com/). This object is exposed as property in `TwitchCommandoClient.emotesManager`
+    * added addRandomEmote to `say` and `reply` methods to avoid same message error
+    * command loading: fixed bug when .js file is not a class (like empty file)
+    * TwitchChatUser : added `channel` property to build the user channel name without concatenating `#` explicitly
+    * Prefix command : added check for full stop character, cannot be a valid prefix because reserved in Twitch chat for server commands
+    * Log unified between tmi.js and TwitchCommando using winston
+    * Added `hideFromHelp` in `CommandOptions` . This will hide the command from help command list
+    * Added rate limiting control
+    * Added `CommandoConstants`
+    * Generated documentation published for GitHub Pages
 
 ## Roadmap
 
 * Better docs and examples
 * ~~Custom prefix (now it's stick to **!**)~~
-* Command arguments validation
+* Command arguments validation (type and custom validation)
 * ~~Integration with database like SQLLite or Mongo to save channels preferences~~
 * Automatic and timed messages
+* ~~Rate limiting control~~
+* Mentions parsing

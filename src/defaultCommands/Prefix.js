@@ -6,7 +6,7 @@ module.exports = class PrefixCommand extends TwitchChatCommand
     {
         super(client, {
             name: 'prefix',
-            group: 'misc',
+            group: 'system',
             description: "This command change the command prefix in current channel",
             broadcasterOnly: true,
             examples: [
@@ -30,6 +30,9 @@ module.exports = class PrefixCommand extends TwitchChatCommand
 
         if (newprefix == '/')
             return msg.reply('Prefix cannot be /');
+
+        if (newprefix == '.')
+            return msg.reply('Prefix cannot be . (full stop)');
 
         await this.client.settingsProvider.set(msg.channel.name, 'prefix', newprefix);
 

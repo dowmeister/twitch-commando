@@ -23,7 +23,7 @@ module.exports = class SimpleCommand extends TwitchChatCommand
 
     async run(msg, parameters)
     {
-        console.log(parameters);
+        this.client.logger.debug(parameters);
 
         msg.reply('roger!');
     }

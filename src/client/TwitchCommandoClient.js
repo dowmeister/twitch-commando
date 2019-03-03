@@ -2,12 +2,16 @@ const tmi = require("tmi.js");
 const EventEmitter = require("events");
 const readdir = require("recursive-readdir-sync");
 const path = require("path");
+const { createLogger, format, transports } = require("winston");
+const { combine, timestamp, prettyPrint, simple, splat, colorize } = format;
 
 const TwitchChatMessage = require("../messages/TwitchChatMessage");
 const TwitchChatChannel = require("../channels/TwitchChatChannel");
 const TwtichChatUser = require("../users/TwitchChatUser");
 const CommandParser = require("../commands/CommandParser");
 const TwitchChatCommand = require("../commands/TwitchChatCommand");
+const EmotesManager = require("../emotes/EmotesManager");
+const CommandoConstants = require("./CommandoConstants");
 
 /**
  * Client configuration options
@@ -22,6 +26,7 @@ const TwitchChatCommand = require("../commands/TwitchChatCommand");
  * @property {String} onJoinMessage On Join message (sent if greetOnJoin = true)
  * @property {Boolean} autoJoinBotChannel Denotes if the bot must autojoin its own channel
  * @property {Boolean} enableJoinCommand Denotes if enable the !join and !part command in bot channel
+ * @property {String} botType Define the bot type, will be used for message limits control. See CommandoConstants for available bot type values
  */
 
 /**
@@ -44,15 +49,17 @@ class TwitchCommandoClient extends EventEmitter {
    * @param {ClientOptions} options Client configuration options
    * @memberof TwitchCommandoClient
    */
-  constructor(/** @type {ClientOptions} */ options) {
+  constructor(options) {
     super();
 
     let defaultOptions = {
+      channels: [],
       prefix: "!",
       greetOnJoin: false,
       botOwners: [],
       autoJoinBotChannel: true,
-      enableJoinCommand: true
+      enableJoinCommand: true,
+      botType: CommandoConstants.BOT_TYPE_NORMAL
     };
 
     options = Object.assign(defaultOptions, options);
@@ -62,6 +69,19 @@ class TwitchCommandoClient extends EventEmitter {
     this.tmi = null;
     this.verboseLogging = false;
     this.commands = [];
+    this.emotesManager = null;
+    this.logger = createLogger({
+      format: combine(simple(), splat(), timestamp(), colorize()),
+      transports: [
+        new transports.Console({
+          level: this.verboseLogging ? "debug" : "info",
+          colorized: true
+        })
+      ]
+    });
+    this.channelsWithMod = [];
+    this.messagesCounterInterval = null;
+    this.messagesCount = 0;
   }
 
   /**
@@ -91,12 +111,15 @@ class TwitchCommandoClient extends EventEmitter {
    *
    * @memberof TwitchCommandoClient
    */
-  connect() {
+  async connect() {
     this.checkOptions();
 
     this.configureClient();
 
-    console.log("Connecting to Twitch Chat");
+    this.emotesManager = new EmotesManager(this);
+    await this.emotesManager.getGlobalEmotes();
+
+    this.logger.info("Connecting to Twitch Chat");
 
     this.tmi = new tmi.client({
       options: {
@@ -110,7 +133,8 @@ class TwitchCommandoClient extends EventEmitter {
         username: this.options.username,
         password: "oauth:" + this.options.oauth
       },
-      channels: this.options.channels
+      channels: this.options.channels,
+      logger: this.logger
     });
 
     this.tmi.on("connected", this.onConnect.bind(this));
@@ -123,25 +147,42 @@ class TwitchCommandoClient extends EventEmitter {
 
     this.tmi.on("timeout", this.onTimeout.bind(this));
 
+    this.tmi.on("mod", this.onMod.bind(this));
+
+    this.tmi.on("unmod", this.onUnmod.bind(this));
+
     this.tmi.on("error", err => {
-      console.error(err.message);
+      this.logger.error(err.message);
       this.emit("error", err);
     });
 
     this.tmi.on("message", this.onMessage.bind(this));
 
-    this.tmi.connect();
+    await this.tmi.connect();
   }
 
   /**
    * Send a text message in the channel
    *
-   * @param {String} channel
-   * @param {String} message
+   * @param {String} channel Channel destination
+   * @param {String} message Message text
+   * @param {Boolean} addRandomEmote Add random emote to avoid message duplication
    * @memberof TwitchCommandoClient
+   * @async
    */
-  say(channel, message) {
-    this.tmi.say(channel, message);
+  async say(channel, message, addRandomEmote = false) {
+    if (this.checkRateLimit()) {
+      if (addRandomEmote)
+        message += " " + this.emotesManager.getRandomEmote().code;
+
+      var serverResponse = await this.tmi.say(channel, message);
+
+      if (this.messagesCount == 0) this.startMessagesCounterInterval();
+
+      this.messagesCount = this.messagesCount + 1;
+
+      return serverResponse;
+    } else this.logger.warn("Rate limit excedeed. Wait for timer reset.");
   }
 
   /**
@@ -149,11 +190,37 @@ class TwitchCommandoClient extends EventEmitter {
    *
    * @param {String} channel
    * @param {String} message
+   * @param {Boolean} addRandomEmote Add random emote to avoid message duplication
    * @returns {String}
+   * @async
    * @memberof TwitchCommandoClient
    */
-  action(channel, message) {
-    this.tmi.action(channel, message);
+  async action(channel, message, addRandomEmote = false) {
+    if (this.checkRateLimit()) {
+      if (addRandomEmote)
+        message += " " + this.emotesManager.getRandomEmote().code;
+
+      var serverResponse = await this.tmi.action(channel, message);
+
+      if (this.messagesCount == 0) this.startMessagesCounterInterval();
+
+      this.messagesCount = this.messagesCount + 1;
+
+      return serverResponse;
+    } else this.logger.warn("Rate limit excedeed. Wait for timer reset.");
+  }
+
+  /**
+   * Send a private message to the user with given text
+   * @param {String} username
+   * @param {String} message
+   * @returns
+   * @async
+   * @memberof TwitchCommandoClient
+   */
+  async whisper(username, message) {
+    var serverResponse = await this.tmi.whisper(username, message);
+    return serverResponse;
   }
 
   /**
@@ -165,22 +232,25 @@ class TwitchCommandoClient extends EventEmitter {
   registerCommandsIn(path) {
     var files = readdir(path);
 
-    //if (this.verboseLogging) console.log(files);
+    //if (this.verboseLogging) this.logger.info(files);
 
     files.forEach(f => {
       var commandFile = require(f);
-      var command = new commandFile(this);
 
-      console.log(
-        `Register command ${command.options.group}:${command.options.name}`
-      );
+      if (typeof commandFile === "function") {
+        var command = new commandFile(this);
 
-      //if (this.verboseLogging) console.log(this.command);
+        this.logger.info(
+          `Register command ${command.options.group}:${command.options.name}`
+        );
 
-      this.commands.push(command);
+        //if (this.verboseLogging) this.logger.info(this.command);
+
+        this.commands.push(command);
+      }
     }, this);
 
-    this.parser = new CommandParser(this.commands);
+    this.parser = new CommandParser(this.commands, this);
   }
 
   findCommand(parserResult) {
@@ -204,6 +274,8 @@ class TwitchCommandoClient extends EventEmitter {
   /**
    * Bot connected
    * @event TwitchCommandoClient#connected
+   * @memberof TwitchCommandoClient
+   * @instance
    */
   onConnect() {
     this.emit("connected");
@@ -212,13 +284,15 @@ class TwitchCommandoClient extends EventEmitter {
       this.tmi.join("#" + this.options.username);
     }
 
-    this.settingsProvider.get("global", "channels", []).then(channels => {
-      channels.forEach(c => {
-        if (!this.options.channels.includes(c)) {
-          this.join(c);
-        }
+    this.settingsProvider
+      .get(CommandoConstants.GLOBAL_SETTINGS_KEY, "channels", [])
+      .then(channels => {
+        channels.forEach(c => {
+          if (!this.options.channels.includes(c)) {
+            this.join(c);
+          }
+        });
       });
-    });
   }
 
   /**
@@ -226,6 +300,8 @@ class TwitchCommandoClient extends EventEmitter {
    * @event TwitchCommandoClient#join
    * @type {TwitchChatChannel} channel
    * @type {String} username
+   * @memberof TwitchCommandoClient
+   * @instance
    */
   onJoin(channel, username) {
     var channelObject = new TwitchChatChannel(
@@ -235,7 +311,12 @@ class TwitchCommandoClient extends EventEmitter {
       this
     );
 
-    if (this.options.greetOnJoin && this.getUsername() == username && this.options.onJoinMessage && this.options.onJoinMessage != '') {
+    if (
+      this.options.greetOnJoin &&
+      this.getUsername() == username &&
+      this.options.onJoinMessage &&
+      this.options.onJoinMessage != ""
+    ) {
       this.action(channel, this.options.onJoinMessage);
     }
 
@@ -246,6 +327,8 @@ class TwitchCommandoClient extends EventEmitter {
    * Bot disonnects
    * @event TwitchCommandoClient#disconnected
    * @type {object}
+   * @memberof TwitchCommandoClient
+   * @instance
    */
   onDisconnect() {
     this.emit("disconnected");
@@ -255,25 +338,31 @@ class TwitchCommandoClient extends EventEmitter {
    * Message received
    * @event TwitchCommandoClient#message
    * @type {TwitchChatMessage}
+   * @memberof TwitchCommandoClient
+   * @instance
    */
 
   /**
    * Command executed
    * @event TwitchCommandoClient#commandExecuted
    * @type {object}
+   * @memberof TwitchCommandoClient
+   * @instance
    */
 
   /**
    * Command error
    * @event TwitchCommandoClient#commandError
    * @type {Error}
+   * @memberof TwitchCommandoClient
+   * @instance
    */
   async onMessage(channel, userstate, messageText, self) {
     if (self) return;
 
     var message = new TwitchChatMessage(userstate, channel, this);
 
-    if (this.verboseLogging) console.log(message);
+    if (this.verboseLogging) this.logger.info(message);
 
     this.emit("message", message);
 
@@ -287,7 +376,7 @@ class TwitchCommandoClient extends EventEmitter {
     var parserResult = this.parser.parse(messageText, prefix);
 
     if (parserResult != null) {
-      if (this.verboseLogging) console.log(parserResult);
+      if (this.verboseLogging) this.logger.info(parserResult);
 
       var command = this.findCommand(parserResult);
 
@@ -304,7 +393,7 @@ class TwitchCommandoClient extends EventEmitter {
               message.reply("Unexpected error: " + err);
               this.emit("commandError", err);
             });
-        } else message.reply(preValidateResponse);
+        } else message.reply(preValidateResponse, true);
       }
     }
   }
@@ -319,6 +408,8 @@ class TwitchCommandoClient extends EventEmitter {
    * Connection timeout
    * @event TwitchCommandoClient#timeout
    * @type {object}
+   * @memberof TwitchCommandoClient
+   * @instance
    */
   onTimeout(channel, username, reason, duration) {
     this.emit("timeout", channel, username, reason, duration);
@@ -327,6 +418,8 @@ class TwitchCommandoClient extends EventEmitter {
   /**
    * Reconnection
    * @event TwitchCommandoClient#reconnect
+   * @memberof TwitchCommandoClient
+   * @instance
    */
   onReconnect() {
     this.emit("reconnect");
@@ -355,6 +448,7 @@ class TwitchCommandoClient extends EventEmitter {
   /**
    * Request the bot to join a channel
    *
+   * @param {String} channel Channel to join
    * @async
    * @returns {Promise<String>}
    * @memberof TwitchCommandoClient
@@ -363,9 +457,10 @@ class TwitchCommandoClient extends EventEmitter {
     return this.tmi.join(channel);
   }
 
-   /**
+  /**
    * Request the bot to leave a channel
    *
+   * @param {String} channel Channel to leave
    * @async
    * @returns {Promise<String>}
    * @memberof TwitchCommandoClient
@@ -374,7 +469,7 @@ class TwitchCommandoClient extends EventEmitter {
     return this.tmi.part(channel);
   }
 
-   /**
+  /**
    * Gets the bot username
    *
    * @returns {String}
@@ -401,9 +496,74 @@ class TwitchCommandoClient extends EventEmitter {
    * @returns {Boolean}
    * @memberof TwitchCommandoClient
    */
-  isOwner(author)
-  {
+  isOwner(author) {
     return this.options.botOwners.includes(author.username);
+  }
+
+  onMod(channel, username) {
+    console.log("mod");
+
+    if (
+      username == this.getUsername() &&
+      !this.channelsWithMod.includes(channel)
+    ) {
+      this.logger.debug("Bot has received mod role");
+      this.channelsWithMod.push(channel);
+    }
+
+    this.emit("mod", channel, username);
+  }
+
+  onUnmod(channel, username) {
+    if (username == this.getUsername()) {
+      this.logger.debug("Bot has received unmod");
+      this.channelsWithMod = this.channelsWithMod.filter(c => {
+        return c != channel;
+      });
+    }
+    this.emit("onumod", channel, username);
+  }
+
+  /**
+   * @private
+   *
+   * @memberof TwitchCommandoClient
+   */
+  startMessagesCounterInterval() {
+    if (this.verboseLogging)
+      this.logger.debug("Starting messages counter interval");
+
+    let messageLimits = CommandoConstants.MESSAGE_LIMITS[this.options.botType];
+
+    this.messagesCounterInterval = setInterval(
+      this.resetMessageCounter.bind(this),
+      messageLimits.timespan * 1000
+    );
+  }
+
+  /**
+   * @private
+   *
+   * @memberof TwitchCommandoClient
+   */
+  resetMessageCounter() {
+    if (this.verboseLogging) this.logger.debug("Resetting messages count");
+
+    this.messagesCount = 0;
+  }
+
+  /**
+   * Check if the bot sent too many messages in timespan limit
+   * @private
+   *
+   * @returns {Boolean}
+   * @memberof TwitchCommandoClient
+   */
+  checkRateLimit() {
+    let messageLimits = CommandoConstants.MESSAGE_LIMITS[this.options.botType];
+    this.logger.warn('Messages count: ' + this.messagesCount);
+    if (this.messagesCount < messageLimits.messages) return true;
+    else return false;
   }
 }
 

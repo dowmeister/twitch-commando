@@ -1,7 +1,6 @@
 const TwitchChatChannel = require('../channels/TwitchChatChannel');
 const TwitchChatUser = require('../users/TwitchChatUser');
 
-
 /**
  * This class represents the chat message
  *
@@ -134,12 +133,13 @@ class TwitchChatMessage
      * Helper method to reply quickly to a message. Create a message to send in the channel with @author <text>
      *
      * @param {String} text
+     * @param {Boolean} addRandomEmote Add random emote to avoid message duplication
      * @memberof TwitchChatMessage
      * @async 
      */
-    async reply(text)
+    async reply(text, addRamndomEmote = false)
     {
-        this.client.say(this.channel.name, `@${this.author.username} ${text}`);
+        return this.client.say(this.channel.name, `@${this.author.username} ${text}`, addRamndomEmote);
     }
 
 
@@ -148,11 +148,12 @@ class TwitchChatMessage
      *
      * @async
      * @param {String} text
+     * @param {Boolean} addRandomEmote Add random emote to avoid message duplication
      * @memberof TwitchChatMessage
      */
-    async actionReply(text)
+    async actionReply(text, addRamndomEmote = false)
     {
-        this.client.action(this.channel.name, `@${this.author.username} ${text}`);
+        return this.client.action(this.channel.name, `@${this.author.username} ${text}`, addRamndomEmote);
     }
 }
 

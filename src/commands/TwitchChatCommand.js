@@ -21,6 +21,8 @@ const TwitchChatMessage = require('../messages/TwitchChatMessage');
  * @property {Array<CommandArgument>} args Arguments
  * @property {String} group Command group
  * @property {Array<String>} aliases Command aliases
+ * @property {Boolean} botChannelOnly Restricted to bot channel only
+ * @property {Boolean} hideFromHelp Hide the command from help command
  */
 
  /**
@@ -36,7 +38,7 @@ class TwichChatCommand
      * @param {CommandOptions} options Command options
      * @memberof TwichChatCommand
      */
-    constructor(/** @type {TwitchCommandoClient} */ client, /** @type {CommandOptions} */ options)
+    constructor(client, options)
     {
         this.options = options;
         this.client = client;
@@ -50,7 +52,7 @@ class TwichChatCommand
      * @memberof TwichChatCommand
      * @async
      */
-    async run(/** @type {TwitchChatMessage} */ msg, parameters)
+    async run(msg, parameters)
     {
 
     }
@@ -65,7 +67,7 @@ class TwichChatCommand
      * @async
      * @private
      */
-    async prepareRun(/** @type {TwitchChatMessage} */ msg, parameters)
+    async prepareRun(msg, parameters)
     {
         var namedParameters = {};
 
@@ -90,8 +92,23 @@ class TwichChatCommand
         await this.run(msg, namedParameters);
     }
 
-    preValidate(/** @type {TwitchChatMessage} */ msg)
+
+    /**
+     * Pre validation before to known if can execute command
+     *
+     * @private
+     * @param {TwitchChatMessage} msg
+     * @returns {String} Validation error. Empty if no error
+     * @memberof TwichChatCommand
+     */
+    preValidate(msg)
     {
+        if (this.options.botChannelOnly)
+        {
+            if (msg.channel.name != '#' + this.client.getUsername())
+                return 'This command can be executed only in the bot channel. Please head to https://twitch.tv/' + this.client.getUsername();
+        }
+        
         if (this.options.ownerOnly && this.client.botOwners != undefined 
             && this.client.botOwners.length > 0 
             && !this.client.options.botOwners.includes(msg.author.name))

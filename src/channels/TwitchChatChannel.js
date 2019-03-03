@@ -1,3 +1,4 @@
+const TwitchCommandoClient = require('../client/TwitchCommandoClient');
 /**
  * Twitch Channel object
  * 
@@ -8,11 +9,11 @@ class TwtichChatChannel
 
     /**
      * Creates an instance of TwtichChatChannel.
-     * @param {TwitchChatMessage} originalMessage
+     * @param {Object} originalMessage
      * @param {TwitchCommandoClient} client
      * @memberof TwtichChatChannel
      */
-    constructor(/** @type {TwitchChatMessage} */ originalMessage, /** @type {TwitchCommandoClient} */ client)
+    constructor(originalMessage, client)
     {
         this.originalMessage = originalMessage;
         this.client = client;
