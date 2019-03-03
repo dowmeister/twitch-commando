@@ -1,5 +1,8 @@
 # Twitch Bot Commando
 
+[![npm version](https://badge.fury.io/js/twitch-commando.svg)](https://badge.fury.io/js/twitch-commando) ![David](https://img.shields.io/david/shardick/twitch-commando.svg) ![GitHub last commit](https://img.shields.io/github/last-commit/shardick/twitch-commando.svg)
+
+
 This is an infrastructure module for Twitch Bot developed *stealing* ideas from discord.js Commando library.
 
 Under the hood TwitchCommandoClient uses `tmi.js` to integrate with Twitch Chat. 

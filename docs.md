@@ -3,82 +3,60 @@
 ### Table of Contents
 
 -   [TwtichChatChannel][1]
-    -   [Parameters][2]
-    -   [name][3]
-    -   [id][4]
-    -   [say][5]
-        -   [Parameters][6]
--   [CommandoConstants][7]
-    -   [Properties][8]
--   [TwitchCommandoClient][9]
-    -   [Parameters][10]
-    -   [enableVerboseLogging][11]
-    -   [connect][12]
-    -   [say][13]
-        -   [Parameters][14]
-    -   [action][15]
-        -   [Parameters][16]
-    -   [whisper][17]
-        -   [Parameters][18]
-    -   [registerCommandsIn][19]
-        -   [Parameters][20]
-    -   [registerDetaultCommands][21]
-    -   [setProvider][22]
-        -   [Parameters][23]
-    -   [join][24]
-        -   [Parameters][25]
-    -   [part][26]
-        -   [Parameters][27]
-    -   [getUsername][28]
-    -   [getChannels][29]
-    -   [isOwner][30]
-        -   [Parameters][31]
--   [ClientOptions][32]
-    -   [Properties][33]
--   [TwichChatCommand][34]
-    -   [Parameters][35]
-    -   [run][36]
-        -   [Parameters][37]
--   [CommandOptions][38]
-    -   [Properties][39]
--   [CommandArgument][40]
-    -   [Properties][41]
--   [TwitchChatMessage][42]
-    -   [Parameters][43]
-    -   [text][44]
-    -   [author][45]
-    -   [id][46]
-    -   [channel][47]
-    -   [color][48]
-    -   [emotes][49]
-    -   [timestamp][50]
-    -   [messageType][51]
-    -   [reply][52]
-        -   [Parameters][53]
-    -   [actionReply][54]
-        -   [Parameters][55]
--   [TwitchChatUser][56]
-    -   [Parameters][57]
-    -   [name][58]
-    -   [username][59]
-    -   [mod][60]
-    -   [badges][61]
-    -   [subscriber][62]
-    -   [id][63]
-    -   [userType][64]
-    -   [turbo][65]
-    -   [whisper][66]
-        -   [Parameters][67]
-    -   [channel][68]
+    -   [name][2]
+    -   [id][3]
+    -   [say][4]
+-   [CommandoConstants][5]
+-   [TwitchCommandoClient][6]
+    -   [enableVerboseLogging][7]
+    -   [connect][8]
+    -   [say][9]
+    -   [action][10]
+    -   [whisper][11]
+    -   [registerCommandsIn][12]
+    -   [registerDetaultCommands][13]
+    -   [setProvider][14]
+    -   [join][15]
+    -   [part][16]
+    -   [getUsername][17]
+    -   [getChannels][18]
+    -   [isOwner][19]
+-   [ClientOptions][20]
+-   [CommandArgument][21]
+-   [CommandOptions][22]
+-   [TwichChatCommand][23]
+    -   [run][24]
+-   [TwitchChatMessage][25]
+    -   [text][26]
+    -   [author][27]
+    -   [id][28]
+    -   [channel][29]
+    -   [color][30]
+    -   [emotes][31]
+    -   [timestamp][32]
+    -   [messageType][33]
+    -   [reply][34]
+    -   [actionReply][35]
+-   [TwitchChatUser][36]
+    -   [name][37]
+    -   [username][38]
+    -   [mod][39]
+    -   [badges][40]
+    -   [subscriber][41]
+    -   [id][42]
+    -   [userType][43]
+    -   [turbo][44]
+    -   [whisper][45]
+    -   [channel][46]
 
 ## TwtichChatChannel
 
 Twitch Channel object
 
-### Parameters
+**Parameters**
 
--   `originalMessage` **[Object][69]** 
--   `client` **[TwitchCommandoClient][70]** 
+-   `originalMessage` **[Object][47]** 
+-   `client` **[TwitchCommandoClient][48]** 
 
 ### name
 
@@ -92,23 +70,23 @@ Channel ID
 
 Send text message in the channel
 
-#### Parameters
+**Parameters**
 
--   `text` **[String][71]** Message text
+-   `text` **[String][49]** Message text
 
 ## CommandoConstants
 
-Type: [Object][69]
+Type: [Object][47]
 
-### Properties
+**Properties**
 
--   `GLOBAL_SETTINGS_KEY` **[String][71]?** Global settings key to save global bot preferences
--   `GLOBAL_EMOTES_URL` **[String][71]?** Service url for Emotes service
--   `BOT_TYPE_NORMAL` **[String][71]?** Normal bot type (user, not mod)
--   `BOT_TYPE_NORMAL_MODDED` **[String][71]?** Normal bot type with mod (user, channel mod)
--   `BOT_TYPE_KNOWN` **[String][71]?** Known bot
--   `BOT_TYPE_VERIFIED` **[String][71]?** Verified bot
--   `MESSAGE_LIMITS` **[String][71]?** Enumeration for message limits configuration
+-   `GLOBAL_SETTINGS_KEY` **[String][49]?** Global settings key to save global bot preferences
+-   `GLOBAL_EMOTES_URL` **[String][49]?** Service url for Emotes service
+-   `BOT_TYPE_NORMAL` **[String][49]?** Normal bot type (user, not mod)
+-   `BOT_TYPE_NORMAL_MODDED` **[String][49]?** Normal bot type with mod (user, channel mod)
+-   `BOT_TYPE_KNOWN` **[String][49]?** Known bot
+-   `BOT_TYPE_VERIFIED` **[String][49]?** Verified bot
+-   `MESSAGE_LIMITS` **[String][49]?** Enumeration for message limits configuration
 
 ## TwitchCommandoClient
 
@@ -116,9 +94,9 @@ Type: [Object][69]
 
 The Commando Client class
 
-### Parameters
+**Parameters**
 
--   `options` **[ClientOptions][72]** Client configuration options
+-   `options` **[ClientOptions][50]** Client configuration options
 
 ### enableVerboseLogging
 
@@ -132,32 +110,32 @@ Connect the bot to Twitch Chat
 
 Send a text message in the channel
 
-#### Parameters
+**Parameters**
 
--   `channel` **[String][71]** Channel destination
--   `message` **[String][71]** Message text
--   `addRandomEmote` **[Boolean][73]** Add random emote to avoid message duplication (optional, default `false`)
+-   `channel` **[String][49]** Channel destination
+-   `message` **[String][49]** Message text
+-   `addRandomEmote` **[Boolean][51]** Add random emote to avoid message duplication (optional, default `false`)
 
 ### action
 
 Send an action message in the channel
 
-#### Parameters
+**Parameters**
 
--   `channel` **[String][71]** 
--   `message` **[String][71]** 
--   `addRandomEmote` **[Boolean][73]** Add random emote to avoid message duplication (optional, default `false`)
+-   `channel` **[String][49]** 
+-   `message` **[String][49]** 
+-   `addRandomEmote` **[Boolean][51]** Add random emote to avoid message duplication (optional, default `false`)
 
-Returns **[String][71]** 
+Returns **[String][49]** 
 
 ### whisper
 
 Send a private message to the user with given text
 
-#### Parameters
+**Parameters**
 
--   `username` **[String][71]** 
--   `message` **[String][71]** 
+-   `username` **[String][49]** 
+-   `message` **[String][49]** 
 
 Returns **any** 
 
@@ -165,9 +143,9 @@ Returns **any**
 
 Register commands in given path (recursive)
 
-#### Parameters
+**Parameters**
 
--   `path` **[String][71]** 
+-   `path` **[String][49]** 
 
 ### registerDetaultCommands
 
@@ -177,7 +155,7 @@ Register default commands, like !help
 
 Set Settings Provider class
 
-#### Parameters
+**Parameters**
 
 -   `provider`  
 
@@ -185,141 +163,141 @@ Set Settings Provider class
 
 Request the bot to join a channel
 
-#### Parameters
+**Parameters**
 
--   `channel` **[String][71]** Channel to join
+-   `channel` **[String][49]** Channel to join
 
-Returns **[Promise][74]&lt;[String][71]>** 
+Returns **[Promise][52]&lt;[String][49]>** 
 
 ### part
 
 Request the bot to leave a channel
 
-#### Parameters
+**Parameters**
 
--   `channel` **[String][71]** Channel to leave
+-   `channel` **[String][49]** Channel to leave
 
-Returns **[Promise][74]&lt;[String][71]>** 
+Returns **[Promise][52]&lt;[String][49]>** 
 
 ### getUsername
 
 Gets the bot username
 
-Returns **[String][71]** 
+Returns **[String][49]** 
 
 ### getChannels
 
 Gets the bot channels
 
-Returns **[Array][75]&lt;[String][71]>** 
+Returns **[Array][53]&lt;[String][49]>** 
 
 ### isOwner
 
 Checks if the message author is one of bot owners
 
-#### Parameters
+**Parameters**
 
--   `author` **[TwitchChatUser][76]** Message author
+-   `author` **[TwitchChatUser][54]** Message author
 
-Returns **[Boolean][73]** 
+Returns **[Boolean][51]** 
 
 ## ClientOptions
 
 Client configuration options
 
-Type: [Object][69]
+Type: [Object][47]
 
-### Properties
+**Properties**
 
--   `verboseLogging` **[Boolean][73]** Enable verbose logging
--   `username` **[String][71]** Bot username
--   `oauth` **[String][71]** Bot oauth password (without oauth:)
--   `botOwners` **[Array][75]&lt;[String][71]>** List of bot owners username
--   `prefix` **[String][71]** Default command prefix
--   `greetOnJoin` **[Boolean][73]** Denotes if the bot must send a message when join a channel
--   `channels` **[Array][75]&lt;[String][71]>** Initials channels to join
--   `onJoinMessage` **[String][71]** On Join message (sent if greetOnJoin = true)
--   `autoJoinBotChannel` **[Boolean][73]** Denotes if the bot must autojoin its own channel
--   `enableJoinCommand` **[Boolean][73]** Denotes if enable the !join and !part command in bot channel
--   `botType` **[String][71]** Define the bot type, will be used for message limits control. See CommandoConstants for available bot type values
-
-## TwichChatCommand
-
-Base class to implement custom commands
-
-### Parameters
-
--   `client` **[TwitchCommandoClient][70]** The TwitchCommandoClient
--   `options` **[CommandOptions][77]** Command options
-
-### run
-
-Method called when command is executed
-
-#### Parameters
-
--   `msg` **[TwitchChatMessage][78]** Message received
--   `parameters` **[object][69]** Arguments parsed
-
-## CommandOptions
-
-Command Options
-
-Type: [Object][69]
-
-### Properties
-
--   `name` **[String][71]** Command name
--   `modOnly` **[Boolean][73]** Restricted only to channel mods
--   `ownerOnly` **[Boolean][73]** Restricted only to bot owners
--   `broadcasterOnly` **[Boolean][73]** Restricted only to channel owner
--   `description` **[String][71]** Command description
--   `examples` **[Array][75]&lt;[String][71]>** Command examples
--   `args` **[Array][75]&lt;[CommandArgument][79]>** Arguments
--   `group` **[String][71]** Command group
--   `aliases` **[Array][75]&lt;[String][71]>** Command aliases
--   `botChannelOnly` **[Boolean][73]** Restricted to bot channel only
--   `hideFromHelp` **[Boolean][73]** Hide the command from help command
+-   `verboseLogging` **[Boolean][51]** Enable verbose logging
+-   `username` **[String][49]** Bot username
+-   `oauth` **[String][49]** Bot oauth password (without oauth:)
+-   `botOwners` **[Array][53]&lt;[String][49]>** List of bot owners username
+-   `prefix` **[String][49]** Default command prefix
+-   `greetOnJoin` **[Boolean][51]** Denotes if the bot must send a message when join a channel
+-   `channels` **[Array][53]&lt;[String][49]>** Initials channels to join
+-   `onJoinMessage` **[String][49]** On Join message (sent if greetOnJoin = true)
+-   `autoJoinBotChannel` **[Boolean][51]** Denotes if the bot must autojoin its own channel
+-   `enableJoinCommand` **[Boolean][51]** Denotes if enable the !join and !part command in bot channel
+-   `botType` **[String][49]** Define the bot type, will be used for message limits control. See CommandoConstants for available bot type values
 
 ## CommandArgument
 
 Command argument
 
-Type: [Object][69]
+Type: [Object][47]
 
-### Properties
+**Properties**
 
--   `name` **[String][71]** Argument key name
--   `type` **[Object][69]** Argument type
--   `defaultValue` **[Object][69]** Argument default value
+-   `name` **[String][49]** Argument key name
+-   `type` **[Object][47]** Argument type
+-   `defaultValue` **[Object][47]** Argument default value
+
+## CommandOptions
+
+Command Options
+
+Type: [Object][47]
+
+**Properties**
+
+-   `name` **[String][49]** Command name
+-   `modOnly` **[Boolean][51]** Restricted only to channel mods
+-   `ownerOnly` **[Boolean][51]** Restricted only to bot owners
+-   `broadcasterOnly` **[Boolean][51]** Restricted only to channel owner
+-   `description` **[String][49]** Command description
+-   `examples` **[Array][53]&lt;[String][49]>** Command examples
+-   `args` **[Array][53]&lt;[CommandArgument][55]>** Arguments
+-   `group` **[String][49]** Command group
+-   `aliases` **[Array][53]&lt;[String][49]>** Command aliases
+-   `botChannelOnly` **[Boolean][51]** Restricted to bot channel only
+-   `hideFromHelp` **[Boolean][51]** Hide the command from help command
+
+## TwichChatCommand
+
+Base class to implement custom commands
+
+**Parameters**
+
+-   `client` **[TwitchCommandoClient][48]** The TwitchCommandoClient
+-   `options` **[CommandOptions][56]** Command options
+
+### run
+
+Method called when command is executed
+
+**Parameters**
+
+-   `msg` **[TwitchChatMessage][57]** Message received
+-   `parameters` **[object][47]** Arguments parsed
 
 ## TwitchChatMessage
 
 This class represents the chat message
 
-### Parameters
+**Parameters**
 
--   `originalMessage` **[object][69]** 
--   `channel` **[String][71]** 
--   `client` **[TwitchCommandoClient][70]** 
+-   `originalMessage` **[object][47]** 
+-   `channel` **[String][49]** 
+-   `client` **[TwitchCommandoClient][48]** 
 
 ### text
 
 Text of the message
 
-Returns **[String][71]** 
+Returns **[String][49]** 
 
 ### author
 
 The author of the message
 
-Returns **[TwitchChatUser][76]** 
+Returns **[TwitchChatUser][54]** 
 
 ### id
 
 The ID of the message
 
-Returns **[String][71]** 
+Returns **[String][49]** 
 
 ### channel
 
@@ -331,7 +309,7 @@ Returns **TwitchChatChannel**
 
 Text color
 
-Returns **[String][71]** 
+Returns **[String][49]** 
 
 ### emotes
 
@@ -341,42 +319,42 @@ Emotes contained in the message
 
 Message sent date
 
-Returns **[Date][80]** 
+Returns **[Date][58]** 
 
 ### messageType
 
 Message type
 
-Returns **[String][71]** 
+Returns **[String][49]** 
 
 ### reply
 
 Helper method to reply quickly to a message. Create a message to send in the channel with @author <text>
 
-#### Parameters
+**Parameters**
 
--   `text` **[String][71]** 
+-   `text` **[String][49]** 
 -   `addRamndomEmote`   (optional, default `false`)
--   `addRandomEmote` **[Boolean][73]** Add random emote to avoid message duplication
+-   `addRandomEmote` **[Boolean][51]** Add random emote to avoid message duplication
 
 ### actionReply
 
 Helper method to reply quickly to a message with an action
 
-#### Parameters
+**Parameters**
 
--   `text` **[String][71]** 
+-   `text` **[String][49]** 
 -   `addRamndomEmote`   (optional, default `false`)
--   `addRandomEmote` **[Boolean][73]** Add random emote to avoid message duplication
+-   `addRandomEmote` **[Boolean][51]** Add random emote to avoid message duplication
 
 ## TwitchChatUser
 
 This class represents a chat user
 
-### Parameters
+**Parameters**
 
--   `originalMessage` **[Object][69]** 
--   `client` **[TwitchCommandoClient][70]** 
+-   `originalMessage` **[Object][47]** 
+-   `client` **[TwitchCommandoClient][48]** 
 
 ### name
 
@@ -398,172 +376,128 @@ This class represents a chat user
 
 Whisper a message to the user
 
-#### Parameters
+**Parameters**
 
--   `message` **[String][71]** Message Text
+-   `message` **[String][49]** Message Text
 
 ### channel
 
 Get the user channel
 
-Returns **[String][71]** Channel name
+Returns **[String][49]** Channel name
 
 [1]: #twtichchatchannel
 
-[2]: #parameters
+[2]: #name
 
-[3]: #name
+[3]: #id
 
-[4]: #id
+[4]: #say
 
-[5]: #say
+[5]: #commandoconstants
 
-[6]: #parameters-1
+[6]: #twitchcommandoclient
 
-[7]: #commandoconstants
+[7]: #enableverboselogging
 
-[8]: #properties
+[8]: #connect
 
-[9]: #twitchcommandoclient
+[9]: #say-1
 
-[10]: #parameters-2
+[10]: #action
 
-[11]: #enableverboselogging
+[11]: #whisper
 
-[12]: #connect
+[12]: #registercommandsin
 
-[13]: #say-1
+[13]: #registerdetaultcommands
 
-[14]: #parameters-3
+[14]: #setprovider
 
-[15]: #action
+[15]: #join
 
-[16]: #parameters-4
+[16]: #part
 
-[17]: #whisper
+[17]: #getusername
 
-[18]: #parameters-5
+[18]: #getchannels
 
-[19]: #registercommandsin
+[19]: #isowner
 
-[20]: #parameters-6
+[20]: #clientoptions
 
-[21]: #registerdetaultcommands
+[21]: #commandargument
 
-[22]: #setprovider
+[22]: #commandoptions
 
-[23]: #parameters-7
+[23]: #twichchatcommand
 
-[24]: #join
+[24]: #run
 
-[25]: #parameters-8
+[25]: #twitchchatmessage
 
-[26]: #part
+[26]: #text
 
-[27]: #parameters-9
+[27]: #author
 
-[28]: #getusername
+[28]: #id-1
 
-[29]: #getchannels
+[29]: #channel
 
-[30]: #isowner
+[30]: #color
 
-[31]: #parameters-10
+[31]: #emotes
 
-[32]: #clientoptions
+[32]: #timestamp
 
-[33]: #properties-1
+[33]: #messagetype
 
-[34]: #twichchatcommand
+[34]: #reply
 
-[35]: #parameters-11
+[35]: #actionreply
 
-[36]: #run
+[36]: #twitchchatuser
 
-[37]: #parameters-12
+[37]: #name-1
 
-[38]: #commandoptions
+[38]: #username
 
-[39]: #properties-2
+[39]: #mod
 
-[40]: #commandargument
+[40]: #badges
 
-[41]: #properties-3
+[41]: #subscriber
 
-[42]: #twitchchatmessage
+[42]: #id-2
 
-[43]: #parameters-13
+[43]: #usertype
 
-[44]: #text
+[44]: #turbo
 
-[45]: #author
+[45]: #whisper-1
 
-[46]: #id-1
+[46]: #channel-1
 
-[47]: #channel
+[47]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object
 
-[48]: #color
+[48]: #twitchcommandoclient
 
-[49]: #emotes
+[49]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String
 
-[50]: #timestamp
+[50]: #clientoptions
 
-[51]: #messagetype
+[51]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean
 
-[52]: #reply
+[52]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise
 
-[53]: #parameters-14
+[53]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array
 
-[54]: #actionreply
+[54]: #twitchchatuser
 
-[55]: #parameters-15
+[55]: #commandargument
 
-[56]: #twitchchatuser
+[56]: #commandoptions
 
-[57]: #parameters-16
+[57]: #twitchchatmessage
 
-[58]: #name-1
-
-[59]: #username
-
-[60]: #mod
-
-[61]: #badges
-
-[62]: #subscriber
-
-[63]: #id-2
-
-[64]: #usertype
-
-[65]: #turbo
-
-[66]: #whisper-1
-
-[67]: #parameters-17
-
-[68]: #channel-1
-
-[69]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object
-
-[70]: #twitchcommandoclient
-
-[71]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String
-
-[72]: #clientoptions
-
-[73]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean
-
-[74]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise
-
-[75]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array
-
-[76]: #twitchchatuser
-
-[77]: #commandoptions
-
-[78]: #twitchchatmessage
-
-[79]: #commandargument
-
-[80]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Date
+[58]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Date

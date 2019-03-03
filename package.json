@@ -36,6 +36,7 @@
     "winston": "^3.2.1"
   },
   "devDependencies": {
+    "clean-documentation-theme": "^0.5.2",
     "jsdoc": "^3.5.5"
   }
 }
