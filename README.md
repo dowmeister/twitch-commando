@@ -6,6 +6,10 @@ Under the hood TwitchCommandoClient uses `tmi.js` to integrate with Twitch Chat.
 
 I've decided to develop this module to fill the gap with Discord Bots implementation where discord.js Commando offers a big and solid infrastructure for Bots with a great command development skeleton.
 
+## Online documentation
+
+Please refer to https://shardick.github.io/twitch-commando/ for complete documentation
+
 ## What Twitch Commando do for you
 
 * Automatic commands parsing
