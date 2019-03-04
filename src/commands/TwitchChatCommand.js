@@ -23,6 +23,7 @@ const TwitchChatMessage = require('../messages/TwitchChatMessage');
  * @property {Array<String>} aliases Command aliases
  * @property {Boolean} botChannelOnly Restricted to bot channel only
  * @property {Boolean} hideFromHelp Hide the command from help command
+ * @property {Boolean} privmsgOnly Restricted to privmsg only
  */
 
  /**
@@ -103,6 +104,11 @@ class TwichChatCommand
      */
     preValidate(msg)
     {
+        if (msg.messageType != 'whisper' && this.options.privmsgOnly)
+        {
+            return 'This command is available only via private message';
+        }
+
         if (this.options.botChannelOnly)
         {
             if (msg.channel.name != '#' + this.client.getUsername())

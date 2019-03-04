@@ -187,10 +187,11 @@ To request to increase limits for your bot, please refer here: https://discuss.d
     * TwitchChatUser : added `channel` property to build the user channel name without concatenating `#` explicitly
     * Prefix command : added check for full stop character, cannot be a valid prefix because reserved in Twitch chat for server commands
     * Log unified between tmi.js and TwitchCommando using winston
-    * Added `hideFromHelp` in `CommandOptions` . This will hide the command from help command list
-    * Added rate limiting control
+    * `CommandOptions` changes: Added `hideFromHelp`, `privmsgOnly`
+    * Added rate limiting control (enabled with `enableRateLimitingControl` in configuration options)
     * Added `CommandoConstants`
     * Generated documentation published for GitHub Pages
+    * `ClientOptions` changes: added `botType` and `enableRateLimitingControl`
 
 ## Roadmap
 

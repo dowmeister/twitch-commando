@@ -139,7 +139,10 @@ class TwitchChatMessage
      */
     async reply(text, addRamndomEmote = false)
     {
-        return this.client.say(this.channel.name, `@${this.author.username} ${text}`, addRamndomEmote);
+        if (this.messageType == 'whisper')
+            return this.client.whisper(this.author.username, text);
+        else
+            return this.client.say(this.channel.name, `@${this.author.username} ${text}`, addRamndomEmote);
     }
 
 

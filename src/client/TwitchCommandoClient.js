@@ -16,17 +16,18 @@ const CommandoConstants = require("./CommandoConstants");
 /**
  * Client configuration options
  * @typedef {Object} ClientOptions
- * @property {Boolean} verboseLogging Enable verbose logging
+ * @property {Boolean} verboseLogging Enable verbose logging (default: false)
  * @property {String} username Bot username
  * @property {String} oauth Bot oauth password (without oauth:)
- * @property {Array<String>} botOwners List of bot owners username
- * @property {String} prefix Default command prefix
- * @property {Boolean} greetOnJoin Denotes if the bot must send a message when join a channel
- * @property {Array<String>} channels Initials channels to join
+ * @property {Array<String>} botOwners List of bot owners username (default: empty array)
+ * @property {String} prefix Default command prefix (default: !)
+ * @property {Boolean} greetOnJoin Denotes if the bot must send a message when join a channel (default: false)
+ * @property {Array<String>} channels Initials channels to join (default: empty array)
  * @property {String} onJoinMessage On Join message (sent if greetOnJoin = true)
- * @property {Boolean} autoJoinBotChannel Denotes if the bot must autojoin its own channel
- * @property {Boolean} enableJoinCommand Denotes if enable the !join and !part command in bot channel
- * @property {String} botType Define the bot type, will be used for message limits control. See CommandoConstants for available bot type values
+ * @property {Boolean} autoJoinBotChannel Denotes if the bot must autojoin its own channel (default: true)
+ * @property {Boolean} enableJoinCommand Denotes if enable the !join and !part command in bot channel (default: true)
+ * @property {String} botType Define the bot type, will be used for message limits control. See CommandoConstants for available bot type values (default: BOT_TYPE_NORMAL)
+ * @property {Boolean} enableRateLimitingControl Enable Rate Limiting control (default: true)
  */
 
 /**
@@ -53,13 +54,16 @@ class TwitchCommandoClient extends EventEmitter {
     super();
 
     let defaultOptions = {
+      enableVerboseLogging: false,
       channels: [],
       prefix: "!",
       greetOnJoin: false,
+      onJoinMessage: '',
       botOwners: [],
       autoJoinBotChannel: true,
       enableJoinCommand: true,
-      botType: CommandoConstants.BOT_TYPE_NORMAL
+      botType: CommandoConstants.BOT_TYPE_NORMAL,
+      enableRateLimitingControl: true
     };
 
     options = Object.assign(defaultOptions, options);
@@ -530,15 +534,19 @@ class TwitchCommandoClient extends EventEmitter {
    * @memberof TwitchCommandoClient
    */
   startMessagesCounterInterval() {
-    if (this.verboseLogging)
-      this.logger.debug("Starting messages counter interval");
 
-    let messageLimits = CommandoConstants.MESSAGE_LIMITS[this.options.botType];
+    if (this.options.enableRateLimitingControl)
+    {
+      if (this.verboseLogging)
+        this.logger.debug("Starting messages counter interval");
 
-    this.messagesCounterInterval = setInterval(
-      this.resetMessageCounter.bind(this),
-      messageLimits.timespan * 1000
-    );
+      let messageLimits = CommandoConstants.MESSAGE_LIMITS[this.options.botType];
+
+      this.messagesCounterInterval = setInterval(
+        this.resetMessageCounter.bind(this),
+        messageLimits.timespan * 1000
+      );
+    }
   }
 
   /**
@@ -560,10 +568,16 @@ class TwitchCommandoClient extends EventEmitter {
    * @memberof TwitchCommandoClient
    */
   checkRateLimit() {
-    let messageLimits = CommandoConstants.MESSAGE_LIMITS[this.options.botType];
-    this.logger.warn('Messages count: ' + this.messagesCount);
-    if (this.messagesCount < messageLimits.messages) return true;
-    else return false;
+
+    if (this.options.enableRateLimitingControl)
+    {
+      let messageLimits = CommandoConstants.MESSAGE_LIMITS[this.options.botType];
+      this.logger.warn('Messages count: ' + this.messagesCount);
+      if (this.messagesCount < messageLimits.messages) return true;
+      else return false;
+    }
+    else
+      return true;
   }
 }
 

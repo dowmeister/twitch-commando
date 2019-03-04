@@ -1,4 +1,3 @@
-const TwitchCommandoClient = require('../client/TwitchCommandoClient');
 /**
  * Twitch Channel object
  * 

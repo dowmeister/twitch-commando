@@ -22,10 +22,10 @@
     -   [getChannels][18]
     -   [isOwner][19]
 -   [ClientOptions][20]
--   [CommandArgument][21]
--   [CommandOptions][22]
--   [TwichChatCommand][23]
-    -   [run][24]
+-   [TwichChatCommand][21]
+    -   [run][22]
+-   [CommandOptions][23]
+-   [CommandArgument][24]
 -   [TwitchChatMessage][25]
     -   [text][26]
     -   [author][27]
@@ -209,29 +209,36 @@ Type: [Object][47]
 
 **Properties**
 
--   `verboseLogging` **[Boolean][51]** Enable verbose logging
+-   `verboseLogging` **[Boolean][51]** Enable verbose logging (default: false)
 -   `username` **[String][49]** Bot username
 -   `oauth` **[String][49]** Bot oauth password (without oauth:)
--   `botOwners` **[Array][53]&lt;[String][49]>** List of bot owners username
--   `prefix` **[String][49]** Default command prefix
--   `greetOnJoin` **[Boolean][51]** Denotes if the bot must send a message when join a channel
--   `channels` **[Array][53]&lt;[String][49]>** Initials channels to join
+-   `botOwners` **[Array][53]&lt;[String][49]>** List of bot owners username (default: empty array)
+-   `prefix` **[String][49]** Default command prefix (default: !)
+-   `greetOnJoin` **[Boolean][51]** Denotes if the bot must send a message when join a channel (default: false)
+-   `channels` **[Array][53]&lt;[String][49]>** Initials channels to join (default: empty array)
 -   `onJoinMessage` **[String][49]** On Join message (sent if greetOnJoin = true)
--   `autoJoinBotChannel` **[Boolean][51]** Denotes if the bot must autojoin its own channel
--   `enableJoinCommand` **[Boolean][51]** Denotes if enable the !join and !part command in bot channel
--   `botType` **[String][49]** Define the bot type, will be used for message limits control. See CommandoConstants for available bot type values
+-   `autoJoinBotChannel` **[Boolean][51]** Denotes if the bot must autojoin its own channel (default: true)
+-   `enableJoinCommand` **[Boolean][51]** Denotes if enable the !join and !part command in bot channel (default: true)
+-   `botType` **[String][49]** Define the bot type, will be used for message limits control. See CommandoConstants for available bot type values (default: BOT_TYPE_NORMAL)
+-   `enableRateLimitingControl` **[Boolean][51]** Enable Rate Limiting control (default: true)
 
-## CommandArgument
+## TwichChatCommand
 
-Command argument
+Base class to implement custom commands
 
-Type: [Object][47]
+**Parameters**
 
-**Properties**
+-   `client` **[TwitchCommandoClient][48]** The TwitchCommandoClient
+-   `options` **[CommandOptions][55]** Command options
 
--   `name` **[String][49]** Argument key name
--   `type` **[Object][47]** Argument type
--   `defaultValue` **[Object][47]** Argument default value
+### run
+
+Method called when command is executed
+
+**Parameters**
+
+-   `msg` **[TwitchChatMessage][56]** Message received
+-   `parameters` **[object][47]** Arguments parsed
 
 ## CommandOptions
 
@@ -247,29 +254,24 @@ Type: [Object][47]
 -   `broadcasterOnly` **[Boolean][51]** Restricted only to channel owner
 -   `description` **[String][49]** Command description
 -   `examples` **[Array][53]&lt;[String][49]>** Command examples
--   `args` **[Array][53]&lt;[CommandArgument][55]>** Arguments
+-   `args` **[Array][53]&lt;[CommandArgument][57]>** Arguments
 -   `group` **[String][49]** Command group
 -   `aliases` **[Array][53]&lt;[String][49]>** Command aliases
 -   `botChannelOnly` **[Boolean][51]** Restricted to bot channel only
 -   `hideFromHelp` **[Boolean][51]** Hide the command from help command
+-   `privmsgOnly` **[Boolean][51]** Restricted to privmsg only
 
-## TwichChatCommand
+## CommandArgument
 
-Base class to implement custom commands
+Command argument
 
-**Parameters**
+Type: [Object][47]
 
--   `client` **[TwitchCommandoClient][48]** The TwitchCommandoClient
--   `options` **[CommandOptions][56]** Command options
+**Properties**
 
-### run
-
-Method called when command is executed
-
-**Parameters**
-
--   `msg` **[TwitchChatMessage][57]** Message received
--   `parameters` **[object][47]** Arguments parsed
+-   `name` **[String][49]** Argument key name
+-   `type` **[Object][47]** Argument type
+-   `defaultValue` **[Object][47]** Argument default value
 
 ## TwitchChatMessage
 
@@ -426,13 +428,13 @@ Returns **[String][49]** Channel name
 
 [20]: #clientoptions
 
-[21]: #commandargument
+[21]: #twichchatcommand
 
-[22]: #commandoptions
+[22]: #run
 
-[23]: #twichchatcommand
+[23]: #commandoptions
 
-[24]: #run
+[24]: #commandargument
 
 [25]: #twitchchatmessage
 
@@ -494,10 +496,10 @@ Returns **[String][49]** Channel name
 
 [54]: #twitchchatuser
 
-[55]: #commandargument
+[55]: #commandoptions
 
-[56]: #commandoptions
+[56]: #twitchchatmessage
 
-[57]: #twitchchatmessage
+[57]: #commandargument
 
 [58]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Date
