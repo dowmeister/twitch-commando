@@ -123,6 +123,8 @@ class TwitchCommandoClient extends EventEmitter {
     this.emotesManager = new EmotesManager(this);
     await this.emotesManager.getGlobalEmotes();
 
+    this.logger.info('Current default prefix is ' + this.options.prefix);
+
     this.logger.info("Connecting to Twitch Chat");
 
     this.tmi = new tmi.client({

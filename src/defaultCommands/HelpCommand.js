@@ -1,68 +1,67 @@
-const TwitchChatCommand = require('../commands/TwitchChatCommand');
+const TwitchChatCommand = require("../commands/TwitchChatCommand");
 
-module.exports = class HelpCommand extends TwitchChatCommand
-{
-    constructor(client)
-    {
-        super(client, {
-            name: 'help',
-            group: 'system',
-            description: "This command shows help for all commands. Send !help <command> for detailed help on a command",
-            examples: [
-                "!help", "!help <command>"
-            ],
-            args: [
-                {
-                    name: 'command',
-                    type: String,
-                    defaultValue: ''                    
-                }
-            ]
-        });
-    }
-
-    async run(msg, { command })
-    {
-        var messageText = '';
-
-        if (command == '')
+module.exports = class HelpCommand extends TwitchChatCommand {
+  constructor(client) {
+    super(client, {
+      name: "help",
+      group: "system",
+      description:
+        "This command shows help for all commands. Send !help <command> for detailed help on a command",
+      examples: ["!help", "!help <command>"],
+      args: [
         {
-            messageText = 'Available commands: '
-
-            var commands = new Array();
-
-            for (let index = 0; index < this.client.commands.length; index++) {
-
-                if (!this.options.hideFromHelp)
-                {
-                    const c = this.client.commands[index];
-                    var prefix = await this.client.settingsProvider.get(msg.channel.name, 'prefix', this.client.options.prefix);
-
-                    commands.push(prefix + c.options.name);
-                }
-            }
-
-            messageText += commands.join(', ');
-
-            return msg.author.whisper(messageText);
+          name: "command",
+          type: String,
+          defaultValue: ""
         }
-        else
-        {
-            var selectedCommand = this.client.commands.find( (c) => { return c.options.name == command && !c.options.hideFromHelp });
+      ]
+    });
+  }
 
-            if (selectedCommand)
-            {
-                messageText = command + ' command details: ' + selectedCommand.options.description;
+  async run(msg, { command }) {
+    var messageText = "";
 
-                if (selectedCommand.options.examples && selectedCommand.options.examples.length > 0)
-                {
-                    messageText += ' - Examples: ' + selectedCommand.options.examples.join(', ');
-                }
+    if (command == "") {
+      messageText = "Available commands: ";
 
-                return msg.author.whisper(messageText);
-            }
-            else
-                return msg.actionReply('command not found.');
+      var commands = new Array();
+
+      for (let index = 0; index < this.client.commands.length; index++) {
+        const c = this.client.commands[index];
+
+        if (!c.options.hideFromHelp) {
+          var prefix = await this.client.settingsProvider.get(
+            msg.channel.name,
+            "prefix",
+            this.client.options.prefix
+          );
+
+          commands.push(prefix + c.options.name);
         }
+      }
+
+      messageText += commands.join(", ");
+
+      return msg.author.whisper(messageText);
+    } else {
+      var selectedCommand = this.client.commands.find(c => {
+        return c.options.name == command && !c.options.hideFromHelp;
+      });
+
+      if (selectedCommand) {
+        messageText =
+          command + " command details: " + selectedCommand.options.description;
+
+        if (
+          selectedCommand.options.examples &&
+          selectedCommand.options.examples.length > 0
+        ) {
+          messageText +=
+            " - Examples: " + selectedCommand.options.examples.join(", ");
+        }
+
+        return msg.author.whisper(messageText);
+      } else return msg.actionReply("command not found.");
     }
-}
+  }
+};
