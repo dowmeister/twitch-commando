@@ -1,6 +1,6 @@
 {
   "name": "twitch-commando",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Twitch Bot Commando Client",
   "main": "index.js",
   "scripts": {
