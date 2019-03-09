@@ -7,12 +7,13 @@ class CommandParser {
   parse(message, prefix) {
     const regex = new RegExp('^([' + prefix + '])([^\\s]+) ?(.*)','gims');
 
-    this.client.logger.debug('%o', regex);
-
-    //var regex = new RegExp(pattern);
+    if (this.client.verboseLogging)
+      this.client.logger.debug('%o', regex);
+      
     var matches = regex.exec(message);
 
-    this.client.logger.debug('%o', matches);
+    if (this.client.verboseLogging && matches != null)
+      this.client.logger.debug('%o', matches);
 
     if (matches != null) {
       var prefix = matches[1];

@@ -115,8 +115,8 @@ class TwichChatCommand
                 return 'This command can be executed only in the bot channel. Please head to https://twitch.tv/' + this.client.getUsername();
         }
         
-        if (this.options.ownerOnly && this.client.botOwners != undefined 
-            && this.client.botOwners.length > 0 
+        if (this.options.ownerOnly && this.client.options.botOwners != undefined 
+            && this.client.options.botOwners.length > 0 
             && !this.client.options.botOwners.includes(msg.author.name))
             return 'This command can be executed only from bot owners';
 

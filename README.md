@@ -194,6 +194,8 @@ To request to increase limits for your bot, please refer here: https://discuss.d
     * `ClientOptions` changes: added `botType` and `enableRateLimitingControl`
 * 1.0.3
     * Fixed bug in help command
+* 1.0.4
+    * Fixed bot owners only command execution
 
 ## Roadmap
 

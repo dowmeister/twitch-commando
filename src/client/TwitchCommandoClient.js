@@ -372,12 +372,10 @@ class TwitchCommandoClient extends EventEmitter {
 
     this.emit("message", message);
 
-    var prefix = this.options.prefix;
-    var prefixFromSettngs = await this.settingsProvider.get(
+    var prefix = await this.settingsProvider.get(
       message.channel.name,
-      "prefix"
+      "prefix", this.options.prefix
     );
-    if (prefixFromSettngs != undefined) prefix = prefixFromSettngs;
 
     var parserResult = this.parser.parse(messageText, prefix);
 
