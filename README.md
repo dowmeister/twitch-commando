@@ -196,6 +196,8 @@ To request to increase limits for your bot, please refer here: https://discuss.d
     * Fixed bug in help command
 * 1.0.4
     * Fixed bot owners only command execution
+* 1.0.5
+    * Fixed bot owners command bug
 
 ## Roadmap
 
