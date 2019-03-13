@@ -117,7 +117,7 @@ class TwichChatCommand
         
         if (this.options.ownerOnly && this.client.options.botOwners != undefined 
             && this.client.options.botOwners.length > 0 
-            && !this.client.options.botOwners.includes(msg.author.name))
+            && !this.client.options.botOwners.includes(msg.author.username))
             return 'This command can be executed only from bot owners';
 
         if (this.options.modOnly)
