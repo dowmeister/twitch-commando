@@ -28,7 +28,8 @@ class CommandoSQLiteProvider extends SettingsProvider
 			try {
 				settings = JSON.parse(row.settings);
 			} catch(err) {
-				client.emit('warn', `SQLiteProvider couldn't parse the settings stored for guild ${row.channel}.`);
+                this.client.emit('warn', `SQLiteProvider couldn't parse the settings stored for guild ${row.channel}.`);
+                this.client.emit('error', err);
 				continue;
             }
             

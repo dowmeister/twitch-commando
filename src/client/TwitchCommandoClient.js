@@ -4,6 +4,7 @@ const readdir = require("recursive-readdir-sync");
 const path = require("path");
 const { createLogger, format, transports } = require("winston");
 const { combine, timestamp, prettyPrint, simple, splat, colorize } = format;
+var Queue = require('better-queue');
 
 const TwitchChatMessage = require("../messages/TwitchChatMessage");
 const TwitchChatChannel = require("../channels/TwitchChatChannel");
@@ -71,7 +72,7 @@ class TwitchCommandoClient extends EventEmitter {
     this.options = options;
 
     this.tmi = null;
-    this.verboseLogging = false;
+    this.verboseLogging = this.options.enableVerboseLogging;
     this.commands = [];
     this.emotesManager = null;
     this.logger = createLogger({
@@ -127,6 +128,18 @@ class TwitchCommandoClient extends EventEmitter {
 
     this.logger.info("Connecting to Twitch Chat");
 
+    var autoJoinChannels = this.options.channels;
+
+    var channelsFromSettings = await this.settingsProvider.get(CommandoConstants.GLOBAL_SETTINGS_KEY, "channels", []);
+    
+    var channels = [...autoJoinChannels, ...channelsFromSettings];
+
+    if (this.options.autoJoinBotChannel) {
+      channels.push("#" + this.options.username);
+    }
+
+    this.logger.info('Autojoining ' + channels.length + ' channels');
+
     this.tmi = new tmi.client({
       options: {
         debug: this.verboseLogging
@@ -139,7 +152,7 @@ class TwitchCommandoClient extends EventEmitter {
         username: this.options.username,
         password: "oauth:" + this.options.oauth
       },
-      channels: this.options.channels,
+      channels: channels,
       logger: this.logger
     });
 
@@ -285,20 +298,12 @@ class TwitchCommandoClient extends EventEmitter {
    */
   onConnect() {
     this.emit("connected");
+  }
 
-    if (this.options.autoJoinBotChannel) {
-      this.tmi.join("#" + this.options.username);
-    }
-
-    this.settingsProvider
-      .get(CommandoConstants.GLOBAL_SETTINGS_KEY, "channels", [])
-      .then(channels => {
-        channels.forEach(c => {
-          if (!this.options.channels.includes(c)) {
-            this.join(c);
-          }
-        });
-      });
+  chunk(arr, size) {
+    return Array.from({ length: Math.ceil(arr.length / size) }, (v, i) =>
+      arr.slice(i * size, i * size + size)
+    );
   }
 
   /**

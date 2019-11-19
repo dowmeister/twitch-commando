@@ -198,6 +198,11 @@ To request to increase limits for your bot, please refer here: https://discuss.d
     * Fixed bot owners only command execution
 * 1.0.5
     * Fixed bot owners command bug
+* 1.0.6
+    * Dependencies update
+* 1.0.7
+    * Bugfix: error fired when trying to parse an invalid JSON setting, now logged and trapped
+    * Bugfix: use of auto-joiner from tmi.js to autojoin channels instead of custom solution to avoid rate limiting on many channels
 
 ## Roadmap
 
