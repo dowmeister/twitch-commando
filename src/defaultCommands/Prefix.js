@@ -1,41 +1,42 @@
-const TwitchChatCommand = require('../commands/TwitchChatCommand');
+const TwitchChatCommand = require("../commands/TwitchChatCommand");
 
-module.exports = class PrefixCommand extends TwitchChatCommand
-{
-    constructor(client)
-    {
-        super(client, {
-            name: 'prefix',
-            group: 'system',
-            description: "This command change the command prefix in current channel",
-            broadcasterOnly: true,
-            examples: [
-                "!prefix <newprefix>"
-            ],
-            args: [
-                {
-                    name: 'newprefix',
-                    type: String                   
-                }
-            ]
-        });
-    }
+module.exports = class PrefixCommand extends TwitchChatCommand {
+  constructor(client) {
+    super(client, {
+      name: "prefix",
+      group: "system",
+      description: "This command change the command prefix in current channel",
+      modOnly: true,
+      examples: ["!prefix <newprefix>"],
+      args: [
+        {
+          name: "newprefix",
+          type: String,
+        },
+      ],
+    });
+  }
 
-    async run(msg, { newprefix })
-    {
-        //console.log(msg.author);
+  async run(msg, { newprefix }) {
+    //console.log(msg.author);
 
-        if (newprefix == '')
-            return msg.reply('Prefix cannot be empty');
+    var prefix = await this.client.settingsProvider.get(
+      msg.channel.name,
+      "prefix"
+    );
 
-        if (newprefix == '/')
-            return msg.reply('Prefix cannot be /');
+    if (newprefix == "") return msg.reply(`Current prefix is ${prefix}`);
 
-        if (newprefix == '.')
-            return msg.reply('Prefix cannot be . (full stop)');
+    if (newprefix == "/") return msg.reply("Prefix cannot be /");
 
-        await this.client.settingsProvider.set(msg.channel.name, 'prefix', newprefix);
+    if (newprefix == ".") return msg.reply("Prefix cannot be . (full stop)");
 
-        return msg.reply('Prefix changed');
-    }
-}
+    await this.client.settingsProvider.set(
+      msg.channel.name,
+      "prefix",
+      newprefix
+    );
+
+    return msg.reply("Prefix changed");
+  }
+};
