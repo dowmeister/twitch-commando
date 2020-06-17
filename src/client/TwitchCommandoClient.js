@@ -577,7 +577,10 @@ class TwitchCommandoClient extends EventEmitter {
     if (this.options.enableRateLimitingControl)
     {
       let messageLimits = CommandoConstants.MESSAGE_LIMITS[this.options.botType];
-      this.logger.warn('Messages count: ' + this.messagesCount);
+      
+      if (this.verboseLogging)
+        this.logger.warn('Messages count: ' + this.messagesCount);
+      
       if (this.messagesCount < messageLimits.messages) return true;
       else return false;
     }
