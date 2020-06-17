@@ -6,7 +6,7 @@ module.exports = class PrefixCommand extends TwitchChatCommand {
       name: "prefix",
       group: "system",
       description: "This command change the command prefix in current channel",
-      modOnly: true,
+      broadcasterOnly: true,
       examples: ["!prefix <newprefix>"],
       args: [
         {
