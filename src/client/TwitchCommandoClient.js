@@ -191,8 +191,8 @@ class TwitchCommandoClient extends EventEmitter {
    */
   async say(channel, message, addRandomEmote = false) {
     if (this.checkRateLimit()) {
-      if (addRandomEmote)
-        message += " " + this.emotesManager.getRandomEmote().code;
+      /*if (addRandomEmote)
+        message += " " + this.emotesManager.getRandomEmote().code;*/
 
       var serverResponse = await this.tmi.say(channel, message);
 
@@ -216,8 +216,8 @@ class TwitchCommandoClient extends EventEmitter {
    */
   async action(channel, message, addRandomEmote = false) {
     if (this.checkRateLimit()) {
-      if (addRandomEmote)
-        message += " " + this.emotesManager.getRandomEmote().code;
+      /*if (addRandomEmote)
+        message += " " + this.emotesManager.getRandomEmote().code;*/
 
       var serverResponse = await this.tmi.action(channel, message);
 
