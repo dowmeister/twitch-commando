@@ -138,6 +138,18 @@ class TwitchChatUser
     {
         return '#' + this.username;
     }
+
+    /**
+     * Check if user is the channel broadcaster
+     * 
+     * @returns {Boolean} True if the user is the broadcaster
+     * @readonly
+     * @memberof TwitchChatUser
+     */
+    get isBroadcaster()
+    {
+        return (this.badges != undefined  && this.badges.broadcaster == '1');
+    }
 }
 
 module.exports = TwitchChatUser;

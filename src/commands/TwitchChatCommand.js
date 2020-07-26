@@ -122,13 +122,21 @@ class TwichChatCommand
 
         if (this.options.modOnly)
         {
-            if ( (msg.author.badges && msg.author.badges.broadcaster != undefined && msg.author.badges.broadcaster != '1') || !msg.author.mod)
+            var validationPassed = false;
+
+            if (msg.author.isBroadcaster)
+                validationPassed = true;
+            
+            if (msg.author.mod)
+                validationPassed = true;
+
+            if (!validationPassed)
                 return 'This command can be executed only from a mod or the broadcaster';
         }        
 
         if (this.options.broadcasterOnly)
         {
-            if (msg.author.badges && msg.author.badges.broadcaster != undefined && msg.author.badges.broadcaster != '1')
+            if (!msg.author.isBroadcaster)
                 return 'This command can be executed only from the broadcaster';
         }
 

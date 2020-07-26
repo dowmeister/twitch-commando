@@ -203,6 +203,10 @@ To request to increase limits for your bot, please refer here: https://discuss.d
 * 1.0.7
     * Bugfix: error fired when trying to parse an invalid JSON setting, now logged and trapped
     * Bugfix: use of auto-joiner from tmi.js to autojoin channels instead of custom solution to avoid rate limiting on many channels
+* 1.0.11
+    * Fixed security bug: non broadcaster, in some situations, could change the channel prefix
+    * Added `isBroadcaster` getter to `TwitchChatUser` to easily identify if the message author is a broadcaster
+    * Command prefix now could be more than one letter
 
 ## Roadmap
 

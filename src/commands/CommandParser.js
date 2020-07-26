@@ -5,7 +5,7 @@ class CommandParser {
   }
 
   parse(message, prefix) {
-    const regex = new RegExp('^([' + prefix + '])([^\\s]+) ?(.*)','gims');
+    const regex = new RegExp('^(' + prefix + ')([^\\s]+) ?(.*)','gims');
 
     if (this.client.verboseLogging)
       this.client.logger.debug('%o', regex);
