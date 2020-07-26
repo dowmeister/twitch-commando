@@ -5,6 +5,11 @@ class CommandParser {
   }
 
   parse(message, prefix) {
+ 
+    if (prefix == '?' || prefix == '^' || prefix == '[' || prefix == ']' || prefix == ']' || prefix == '(' || prefix == ')' || prefix == '\\' || 
+      prefix == '*')
+      prefix = '\\' + prefix;
+
     const regex = new RegExp('^(' + prefix + ')([^\\s]+) ?(.*)','gims');
 
     if (this.client.verboseLogging)

@@ -207,6 +207,8 @@ To request to increase limits for your bot, please refer here: https://discuss.d
     * Fixed security bug: non broadcaster, in some situations, could change the channel prefix
     * Added `isBroadcaster` getter to `TwitchChatUser` to easily identify if the message author is a broadcaster
     * Command prefix now could be more than one letter
+* 1.0.12
+    * Checked prefix for invalid regex characters: ^?()[]*\
 
 ## Roadmap
 
