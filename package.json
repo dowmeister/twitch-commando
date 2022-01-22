@@ -29,7 +29,7 @@
   "dependencies": {
     "better-queue": "^3.8.10",
     "express": "^4.17.1",
-    "node-fetch": "^2.6.0",
+    "node-fetch": "^3.1.1",
     "recursive-readdir-sync": "^1.0.6",
     "recursive-readdir-synchronous": "0.0.4",
     "sleep": "^6.1.0",
