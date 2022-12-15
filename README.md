@@ -1,13 +1,35 @@
 # Twitch Bot Commando
 
-[![npm version](https://badge.fury.io/js/twitch-commando.svg)](https://badge.fury.io/js/twitch-commando) ![David](https://img.shields.io/david/shardick/twitch-commando.svg) ![GitHub last commit](https://img.shields.io/github/last-commit/shardick/twitch-commando.svg)
-
+[![npm version](https://badge.fury.io/js/twitch-commando.svg)](https://badge.fury.io/js/twitch-commando) ![GitHub last commit](https://img.shields.io/github/last-commit/shardick/twitch-commando.svg)
 
 This is an infrastructure module for Twitch Bot developed *stealing* ideas from discord.js Commando library.
 
 Under the hood TwitchCommandoClient uses `tmi.js` to integrate with Twitch Chat. 
 
 I've decided to develop this module to fill the gap with Discord Bots implementation where discord.js Commando offers a big and solid infrastructure for Bots with a great command development skeleton.
+
+# Breaking Changes in 2.0
+
+`TwitchChatChannel` has been renamed fixing the typo.
+
+The V2 uses [node-sqlite](https://github.com/kriasoft/node-sqlite) and [node-sqlite3](https://github.com/TryGhost/node-sqlite3) for backward compatibility.
+
+`npm install --save sqlite sqlite3`
+
+the Settings Provider must be initialized as follow:
+
+```
+const sqlite3 = require('sqlite3');
+const sqlite = require("sqlite");
+
+....
+
+client.setProvider(
+  sqlite
+    .open({ driver: sqlite3.Database, filename: path.join(__dirname, dbName)})
+    .then((db) => new CommandoSQLiteProvider(db))
+);
+```
 
 ## Online documentation
 
@@ -33,8 +55,9 @@ https://www.npmjs.com/package/twitch-commando
 
 ```
 const {
-    TwitchCommandoClient, TwtichChatMessage, TwtichChatUser, CommandoSQLiteProvider
+    TwitchCommandoClient, TwitchChatMessage, TwitchChatUser, CommandoSQLiteProvider
 } = require('twitch-commando');
+const sqlite3 = require('sqlite3');
 const sqlite = require('sqlite');
 const path = require('path');
 
@@ -62,11 +85,13 @@ client.on('error', err => {
 client.on('message', message => {
 });
 
-client.registerDetaultCommands();
+client.registerDefaultCommands();
 client.registerCommandsIn(path.join(__dirname, 'commands'));
 
 client.setProvider(
-    sqlite.open(path.join(__dirname, 'database.sqlite3')).then(db => new CommandoSQLiteProvider(db))
+  sqlite
+    .open({ driver: sqlite3.Database, filename: path.join(__dirname, dbName)})
+    .then((db) => new CommandoSQLiteProvider(db))
 );
 
 client.connect();
@@ -209,6 +234,11 @@ To request to increase limits for your bot, please refer here: https://discuss.d
     * Command prefix now could be more than one letter
 * 1.0.12
     * Checked prefix for invalid regex characters: ^?()[]*\
+* 2.0
+    * Fixed TwitchChatChannel name type
+    * Changed sqlite dep to node-sqlite4 and node-sqlite3
+    * Updated tmi.js to 1.8.5
+    * Channel is removed from settings after being banned
 
 ## Roadmap
 

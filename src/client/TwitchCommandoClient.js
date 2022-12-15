@@ -8,7 +8,7 @@ var Queue = require('better-queue');
 
 const TwitchChatMessage = require("../messages/TwitchChatMessage");
 const TwitchChatChannel = require("../channels/TwitchChatChannel");
-const TwtichChatUser = require("../users/TwitchChatUser");
+const TwitchChatUser = require("../users/TwitchChatUser");
 const CommandParser = require("../commands/CommandParser");
 const TwitchChatCommand = require("../commands/TwitchChatCommand");
 const EmotesManager = require("../emotes/EmotesManager");
@@ -29,6 +29,9 @@ const CommandoConstants = require("./CommandoConstants");
  * @property {Boolean} enableJoinCommand Denotes if enable the !join and !part command in bot channel (default: true)
  * @property {String} botType Define the bot type, will be used for message limits control. See CommandoConstants for available bot type values (default: BOT_TYPE_NORMAL)
  * @property {Boolean} enableRateLimitingControl Enable Rate Limiting control (default: true)
+ * @property {Boolean} skipMembership Skip PART\JOIN events (default: true)
+ * @property {Boolean} enableVerboseLogging Enable Verbose Logging up to debug level (default: false)
+ * @property {Number} joinInterval TMI Join Interval in milliseconds (default: 350ms instead of default tmi 2000ms)
  */
 
 /**
@@ -64,7 +67,9 @@ class TwitchCommandoClient extends EventEmitter {
       autoJoinBotChannel: true,
       enableJoinCommand: true,
       botType: CommandoConstants.BOT_TYPE_NORMAL,
-      enableRateLimitingControl: true
+      enableRateLimitingControl: true,
+      skipMembership: true,
+      joinInterval: 350
     };
 
     options = Object.assign(defaultOptions, options);
@@ -98,7 +103,7 @@ class TwitchCommandoClient extends EventEmitter {
     this.verboseLogging = true;
   }
 
-  configureClient() {}
+  configureClient() { }
 
   checkOptions() {
     if (this.options.prefix == "/")
@@ -131,7 +136,7 @@ class TwitchCommandoClient extends EventEmitter {
     var autoJoinChannels = this.options.channels;
 
     var channelsFromSettings = await this.settingsProvider.get(CommandoConstants.GLOBAL_SETTINGS_KEY, "channels", []);
-    
+
     var channels = [...autoJoinChannels, ...channelsFromSettings];
 
     if (this.options.autoJoinBotChannel) {
@@ -142,7 +147,9 @@ class TwitchCommandoClient extends EventEmitter {
 
     this.tmi = new tmi.client({
       options: {
-        debug: this.verboseLogging
+        debug: this.verboseLogging,
+        skipMembership: this.options.skipMembership,
+        joinInterval: this.options.joinInterval
       },
       connection: {
         secure: true,
@@ -170,9 +177,26 @@ class TwitchCommandoClient extends EventEmitter {
 
     this.tmi.on("unmod", this.onUnmod.bind(this));
 
+    this.tmi.on('notice', async (channel, msgid, message) => {
+      if (message.includes("You are permanently banned from talking in")) {
+        this.logger.info(`Removing ${channel} because the bot has been banned`);
+        await this.removeChannelFromSettings(channel.replace("#", ""));
+      }
+    });
+
     this.tmi.on("error", err => {
       this.logger.error(err.message);
       this.emit("error", err);
+    });
+
+    this.tmi.on('ban', async (channel, username, reason) => {
+      this.logger.info(`Bot banned from ${channel} by ${username} with reason ${reason}`);
+      await this.removeChannelFromSettings(channel);
+    });
+
+    this.tmi.on('part', async (channel, username, self) => {
+      this.logger.info(`Bot left ${channel}`);
+      await this.removeChannelFromSettings(channel);
     });
 
     this.tmi.on("message", this.onMessage.bind(this));
@@ -407,11 +431,11 @@ class TwitchCommandoClient extends EventEmitter {
     }
   }
 
-  onAction(action) {}
+  onAction(action) { }
 
-  onBan(user, reason) {}
+  onBan(user, reason) { }
 
-  onUnban(user) {}
+  onUnban(user) { }
 
   /**
    * Connection timeout
@@ -540,8 +564,7 @@ class TwitchCommandoClient extends EventEmitter {
    */
   startMessagesCounterInterval() {
 
-    if (this.options.enableRateLimitingControl)
-    {
+    if (this.options.enableRateLimitingControl) {
       if (this.verboseLogging)
         this.logger.debug("Starting messages counter interval");
 
@@ -574,18 +597,23 @@ class TwitchCommandoClient extends EventEmitter {
    */
   checkRateLimit() {
 
-    if (this.options.enableRateLimitingControl)
-    {
+    if (this.options.enableRateLimitingControl) {
       let messageLimits = CommandoConstants.MESSAGE_LIMITS[this.options.botType];
-      
+
       if (this.verboseLogging)
         this.logger.warn('Messages count: ' + this.messagesCount);
-      
+
       if (this.messagesCount < messageLimits.messages) return true;
       else return false;
     }
     else
       return true;
+  }
+
+  async removeChannelFromSettings(channel) {
+    let channels = await this.settingsProvider.get(CommandoConstants.GLOBAL_SETTINGS_KEY, 'channels', []);
+    channels = channels.filter((c) => { return c != channel });
+    await this.settingsProvider.set(CommandoConstants.GLOBAL_SETTINGS_KEY, 'channels', channels);
   }
 }
 

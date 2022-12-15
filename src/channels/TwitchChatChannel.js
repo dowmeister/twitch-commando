@@ -3,7 +3,7 @@
  * 
  * @class
  */
-class TwtichChatChannel
+class TwitchChatChannel
 {
 
     /**
@@ -56,4 +56,4 @@ class TwtichChatChannel
     }
 }
 
-module.exports = TwtichChatChannel;
+module.exports = TwitchChatChannel;

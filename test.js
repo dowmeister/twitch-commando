@@ -1,5 +1,5 @@
 const {
-    TwitchCommandoClient, TwtichChatMessage, TwtichChatUser 
+    TwitchCommandoClient
 } = require('./index');
 
 const path = require('path');
