@@ -5,16 +5,16 @@ class CommandParser {
   }
 
   parse(message, prefix) {
- 
-    if (prefix == '?' || prefix == '^' || prefix == '[' || prefix == ']' || prefix == ']' || prefix == '(' || prefix == ')' || prefix == '\\' || 
+
+    if (prefix == '?' || prefix == '^' || prefix == '[' || prefix == ']' || prefix == ']' || prefix == '(' || prefix == ')' || prefix == '\\' ||
       prefix == '*')
       prefix = '\\' + prefix;
 
-    const regex = new RegExp('^(' + prefix + ')([^\\s]+) ?(.*)','gims');
+    const regex = new RegExp('^(' + prefix + ')([^\\s]+) ?(.*)', 'gims');
 
     if (this.client.verboseLogging)
       this.client.logger.debug('%o', regex);
-      
+
     var matches = regex.exec(message);
 
     if (this.client.verboseLogging && matches != null)
@@ -28,13 +28,13 @@ class CommandParser {
       if (matches.length > 3) {
         var argsString = matches[3].trim();
 
-        args = argsString.split(" ").filter(v => v!="");
+        args = argsString.split(" ").filter(v => v != "");
       }
 
       var result = {
-          prefix: prefix, 
-          command: command,
-          args: args
+        prefix: prefix,
+        command: command,
+        args: args
       }
 
       return result;

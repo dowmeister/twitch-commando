@@ -239,6 +239,8 @@ To request to increase limits for your bot, please refer here: https://discuss.d
     * Changed sqlite dep to node-sqlite4 and node-sqlite3
     * Updated tmi.js to 1.8.5
     * Channel is removed from settings after being banned
+    * Channel is removed from settings when the channel itself doesnt exists anymore or is suspended
+    * Added `skipMembership` and `joinInterval` to `ClientOptions`
 
 ## Roadmap
 
