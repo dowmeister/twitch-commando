@@ -474,7 +474,7 @@ class TwitchCommandoClient extends EventEmitter {
    * @memberof TwitchCommandoClient
    */
   async setProvider(provider) {
-    this.settingsProvider = await provider;
+    this.settingsProvider = provider;
     await this.settingsProvider.init(this);
   }
 
