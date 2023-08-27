@@ -241,6 +241,8 @@ To request to increase limits for your bot, please refer here: https://discuss.d
     * Channel is removed from settings after being banned
     * Channel is removed from settings when the channel itself doesnt exists anymore or is suspended
     * Added `skipMembership` and `joinInterval` to `ClientOptions`
+* 2.0.3
+    * Removed remote emotes loading
 
 ## Roadmap
 

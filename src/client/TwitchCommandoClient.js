@@ -127,7 +127,7 @@ class TwitchCommandoClient extends EventEmitter {
     this.configureClient();
 
     this.emotesManager = new EmotesManager(this);
-    await this.emotesManager.getGlobalEmotes();
+    //await this.emotesManager.getGlobalEmotes();
 
     this.logger.info('Current default prefix is ' + this.options.prefix);
 
