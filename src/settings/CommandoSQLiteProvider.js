@@ -16,7 +16,7 @@ class CommandoSQLiteProvider extends SettingsProvider
 
         await this.db.run('CREATE TABLE IF NOT EXISTS settings (channel TEXT PRIMARY KEY, settings TEXT)');
 
-        this.loadSettings();
+        await this.loadSettings();
     }
 
     async loadSettings()
